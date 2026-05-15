@@ -524,6 +524,7 @@
 
     .recipe-left-inner {
       background: var(--cream);
+      position: relative;
     }
 
     .spread-img-wrap {
@@ -873,10 +874,49 @@
     }
 
     @media (max-width: 768px) {
-      #flipbook { display: none; }
-      body { overflow: auto; background: var(--sky); }
-      .mobile-overlay { display: block; }
-      .mobile-overlay.open { transform: translateY(0); }
+      body { background: var(--deep); }
+      #spine-shadow { display: none; }
+
+      /* Mobile recipe-read button on image page */
+      .mobile-read-btn {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Syne', sans-serif;
+        font-size: 0.4375rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--sky);
+        background: rgba(26,34,54,0.6);
+        border: 1px solid rgba(238,244,250,0.15);
+        padding: 0.75rem 1.5rem;
+        border-radius: 999px;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        white-space: nowrap;
+      }
+
+      /* Shrink lib-nav padding on mobile */
+      .lib-nav { padding: 1rem 1.25rem; }
+      .lib-scroll { padding-bottom: 2rem; }
+
+      /* Shrink featured padding */
+      .lib-featured { padding: 1.25rem 1.25rem; }
+
+      /* Cards single column on mobile */
+      .card-grid { grid-template-columns: 1fr; }
+
+      /* Shrink card padding */
+      .card { padding: 1rem 1.25rem; }
+
+      /* Title page mobile */
+      .title-inner { padding: 2rem; }
+      .title-heading { font-size: 3rem; }
+
+      /* Recipe right mobile scrollable */
+      .recipe-right-inner { padding: 1.5rem; }
     }
   </style>
 </head>
@@ -1237,6 +1277,10 @@
          </div>`
       : `<div class="spread-hero-blank"><div class="spread-ghost-num">${data.num}</div></div>`;
 
+    const mobileBtn = isMobile
+      ? `<button class="mobile-read-btn" onclick="readRecipe()">Read recipe →</button>`
+      : '';
+
     return top + `
       <div class="spread-left-content">
         <div class="spread-left-cat">${data.cat}</div>
@@ -1246,7 +1290,8 @@
           <span>Serves ${data.serves}</span><span>·</span>
           <span>${data.season}</span>
         </div>
-      </div>`;
+      </div>
+      ${mobileBtn}`;
   }
 
   /* ── Build recipe RIGHT page ── */
@@ -1324,8 +1369,9 @@
 
   /* ── StPageFlip init ── */
   let pageFlip;
-  const pageW = Math.ceil(window.innerWidth / 2);
-  const pageH = window.innerHeight;
+  const isMobile = window.innerWidth <= 768;
+  const pageW    = isMobile ? window.innerWidth : Math.ceil(window.innerWidth / 2);
+  const pageH    = window.innerHeight;
 
   window.addEventListener('load', () => {
     pageFlip = new St.PageFlip(
@@ -1336,7 +1382,7 @@
         size:                'fixed',
         drawShadow:          true,
         flippingTime:        1500,
-        usePortrait:         false,
+        usePortrait:         isMobile,
         showCover:           false,
         maxShadowOpacity:    0.6,
         useMouseEvents:      false,
@@ -1360,8 +1406,18 @@
     document.getElementById('recipe-right-inner').scrollTop = 0;
 
     if (pageFlip) {
-      setTimeout(() => pageFlip.flip(2, 'bottom'), 30);
+      if (isMobile) {
+        /* Portrait: flip to image page first, "Read recipe" button goes to text */
+        setTimeout(() => pageFlip.flip(2, 'bottom'), 30);
+      } else {
+        setTimeout(() => pageFlip.flip(2, 'bottom'), 30);
+      }
     }
+  }
+
+  /* ── Read recipe (mobile only — flips from image page to text page) ── */
+  function readRecipe() {
+    if (pageFlip) pageFlip.flip(3, 'bottom');
   }
 
   /* ── Close recipe ── */
