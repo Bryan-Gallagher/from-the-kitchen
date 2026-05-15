@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From the Kitchen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary:      #C4674A; /* terracotta — the heart of it */
+      --color-primary-soft: #E8956E; /* lighter terracotta for hover states */
+      --color-surface:      #FAF7F2; /* warm cream — aged cookbook paper */
+      --color-surface-2:    #F3EDE4; /* slightly deeper cream for contrast areas */
+      --color-text:         #2A1F1A; /* walnut — warm not cold */
+      --color-text-muted:   #7A6A62; /* muted walnut for supporting text */
+      --color-accent:       #7A8C5C; /* dusty olive — herbs, garden */
+      --color-blush:        #E8B89A; /* warm blush — hospitality */
+      --color-card:         #FFFFFF;
+
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+
+      --shadow-card:  0 2px 20px rgba(42, 31, 26, 0.07);
+      --shadow-hover: 0 10px 48px rgba(42, 31, 26, 0.13);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    header {
+      background: var(--color-surface);
+      border-bottom: 1px solid rgba(42,31,26,0.08);
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .wordmark {
+      font-family: var(--font-display);
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      font-optical-sizing: auto;
+    }
+
+    .wordmark em {
+      color: var(--color-primary);
+      font-style: normal;
+    }
+
+    nav { display: flex; gap: 2rem; align-items: center; }
+
+    nav a {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover  { color: var(--color-primary); }
+    nav a.active { color: var(--color-text); }
+
+    .nav-add {
+      background: var(--color-primary);
+      color: white !important;
+      padding: 0.5rem 1.125rem;
+      border-radius: 9999px;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-add:hover { background: var(--color-primary-soft); color: white !important; }
+
+    /* ── Hero ────────────────────────────────────────────── */
+    .hero {
+      padding: 5rem 2.5rem 3.5rem;
+      max-width: 760px;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-eyebrow::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--color-primary);
+      opacity: 0.5;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.75rem, 5vw, 4.25rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      color: var(--color-text);
+      margin-bottom: 1.25rem;
+      font-optical-sizing: auto;
+    }
+
+    .hero p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1.125rem;
+      color: var(--color-text-muted);
+      line-height: 1.75;
+      max-width: 440px;
+      font-optical-sizing: auto;
+    }
+
+    /* ── Filter bar ──────────────────────────────────────── */
+    .grid-section {
+      padding: 0 2.5rem 6rem;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-tag {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.375rem 1rem;
+      border-radius: 9999px;
+      border: 1.5px solid rgba(42,31,26,0.14);
+      color: var(--color-text-muted);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.18s;
+      letter-spacing: 0.01em;
+    }
+
+    .filter-tag:hover,
+    .filter-tag.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+    }
+
+    /* ── Recipe grid ─────────────────────────────────────── */
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .recipe-card {
+      background: var(--color-card);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.3s, transform 0.3s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .recipe-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-4px);
+    }
+
+    .recipe-card.featured {
+      grid-column: span 2;
+    }
+
+    .card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+    }
+
+    .recipe-card.featured .card-img {
+      aspect-ratio: 16/9;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 0.625rem;
+    }
+
+    .card-category {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+    }
+
+    .card-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--color-text-muted);
+      opacity: 0.35;
+    }
+
+    .card-time {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.1875rem;
+      line-height: 1.25;
+      letter-spacing: -0.025em;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+      font-optical-sizing: auto;
+    }
+
+    .recipe-card.featured .card-title {
+      font-size: 1.625rem;
+    }
+
+    .card-desc {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      line-height: 1.65;
+      flex: 1;
+      font-optical-sizing: auto;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1.125rem;
+      padding-top: 1.125rem;
+      border-top: 1px solid rgba(42,31,26,0.07);
+    }
+
+    .card-serves {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .card-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--color-surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-primary);
+      font-size: 1.1rem;
+      transition: background 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .recipe-card:hover .card-btn {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    footer {
+      background: var(--color-text);
+      color: rgba(250,247,242,0.45);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.8125rem;
+    }
+
+    footer strong {
+      font-family: var(--font-display);
+      color: var(--color-surface);
+      font-weight: 700;
+    }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .recipe-grid { grid-template-columns: repeat(2, 1fr); }
+      .recipe-card.featured { grid-column: span 2; }
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 1rem 1.25rem; }
+      nav a:not(.nav-add) { display: none; }
+      .hero { padding: 3rem 1.25rem 2rem; }
+      .grid-section { padding: 0 1.25rem 4rem; }
+      .recipe-grid { grid-template-columns: 1fr; }
+      .recipe-card.featured { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">From <em>the</em> Kitchen</div>
+  <nav>
+    <a href="#" class="active">All Recipes</a>
+    <a href="#">By Season</a>
+    <a href="#">Favorites</a>
+    <a href="#" class="nav-add">+ Add Recipe</a>
+  </nav>
+</header>
+
+<main>
+  <div class="hero">
+    <p class="hero-eyebrow">A personal collection</p>
+    <h1>Food worth making twice.</h1>
+    <p>Recipes gathered from kitchens, travels, and the people who've fed us well. Everything here has earned its place.</p>
+  </div>
+
+  <section class="grid-section">
+    <div class="filter-bar">
+      <button class="filter-tag active">Everything</button>
+      <button class="filter-tag">Pasta</button>
+      <button class="filter-tag">Slow Cook</button>
+      <button class="filter-tag">Fish</button>
+      <button class="filter-tag">Breakfast</button>
+      <button class="filter-tag">Baking</button>
+      <button class="filter-tag">Vegetarian</button>
+    </div>
+
+    <div class="recipe-grid">
+
+      <div class="recipe-card featured">
+        <img class="card-img" src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=1000&q=80" alt="Roasted Tomato Pasta">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-category">Pasta</span>
+            <span class="card-dot"></span>
+            <span class="card-time">45 min</span>
+          </div>
+          <h2 class="card-title">Roasted Tomato Pasta with Anchovy Butter</h2>
+          <p class="card-desc">The tomatoes get sweeter, the anchovies disappear into silk. This is the one I come back to when I need something that feels like home.</p>
+          <div class="card-footer">
+            <span class="card-serves">Serves 4</span>
+            <div class="card-btn">→</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <img class="card-img" src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d6?w=600&q=80" alt="Short Ribs">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-category">Slow Cook</span>
+            <span class="card-dot"></span>
+            <span class="card-time">3 hrs</span>
+          </div>
+          <h2 class="card-title">Braised Short Ribs with Red Wine</h2>
+          <p class="card-desc">Sunday cooking. The kind that fills the whole house.</p>
+          <div class="card-footer">
+            <span class="card-serves">Serves 6</span>
+            <div class="card-btn">→</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <img class="card-img" src="https://images.unsplash.com/photo-1551326844-4df70f978d18?w=600&q=80" alt="Shakshuka">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-category">Breakfast</span>
+            <span class="card-dot"></span>
+            <span class="card-time">25 min</span>
+          </div>
+          <h2 class="card-title">Shakshuka with Feta & Herbs</h2>
+          <p class="card-desc">Eggs poached in spiced tomato — a dish that works at any hour.</p>
+          <div class="card-footer">
+            <span class="card-serves">Serves 2</span>
+            <div class="card-btn">→</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <img class="card-img" src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80" alt="Miso Salmon">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-category">Fish</span>
+            <span class="card-dot"></span>
+            <span class="card-time">20 min</span>
+          </div>
+          <h2 class="card-title">Miso Glazed Salmon</h2>
+          <p class="card-desc">Lacquered, caramelised, done in twenty minutes.</p>
+          <div class="card-footer">
+            <span class="card-serves">Serves 2</span>
+            <div class="card-btn">→</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <img class="card-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80" alt="Banana Cake">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-category">Baking</span>
+            <span class="card-dot"></span>
+            <span class="card-time">1 hr</span>
+          </div>
+          <h2 class="card-title">Brown Butter Banana Cake</h2>
+          <p class="card-desc">Better than banana bread. The brown butter is non-negotiable.</p>
+          <div class="card-footer">
+            <span class="card-serves">Serves 8</span>
+            <div class="card-btn">→</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <img class="card-img" src="https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600&q=80" alt="Green Pozole">
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-category">Slow Cook</span>
+            <span class="card-dot"></span>
+            <span class="card-time">2 hrs</span>
+          </div>
+          <h2 class="card-title">Green Pozole</h2>
+          <p class="card-desc">Tomatillos, hominy, pumpkin seeds. A bowl that takes its time.</p>
+          <div class="card-footer">
+            <span class="card-serves">Serves 6</span>
+            <div class="card-btn">→</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer>
+  <strong>From the Kitchen</strong> &nbsp;·&nbsp; A personal collection
+</footer>
+
+</body>
+</html>

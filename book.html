@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From the Kitchen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,200;1,9..144,300;1,9..144,400;1,9..144,500&family=Cormorant+Infant:ital,wght@0,300;1,300;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
+  <style>
+    :root {
+      --sky:      #EEF4FA;
+      --sky-2:    #E4EDF6;
+      --sky-3:    #D4E2EF;
+      --sky-card: #FAF7F2;
+      --deep:     #1A2236;
+      --deep-2:   #222B40;
+      --ink:      #1C2333;
+      --ink-mid:  #3A4560;
+      --muted:    #7A8BA8;
+      --gold:     #B8900A;
+      --sage:     #5B9E88;
+      --sage-l:   #A0C4B8;
+      --cream:    #FDFAF5;
+      --faint:    rgba(28,35,51,0.07);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      overflow: hidden;
+      font-family: 'Syne', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: #0D111A;
+    }
+
+    /* ── StPageFlip container ── */
+    #flipbook {
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      inset: 0;
+    }
+
+    /* ── Book spine crease (static shadow at center binding) ── */
+    #spine-shadow {
+      position: fixed;
+      left: calc(50% - 18px);
+      top: 0;
+      width: 36px;
+      height: 100vh;
+      background: linear-gradient(to right,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,0.10) 35%,
+        rgba(0,0,0,0.22) 50%,
+        rgba(0,0,0,0.10) 65%,
+        rgba(0,0,0,0) 100%
+      );
+      z-index: 200;
+      pointer-events: none;
+    }
+
+    /* ── Base page ── */
+    .ftk-page { overflow: hidden; }
+
+    /* ── Inner wrappers (StPageFlip manages outer element) ── */
+    .page-inner {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ════════════════════════════════
+       PAGE 0 — TITLE / ATMOSPHERIC
+    ════════════════════════════════ */
+
+    .title-inner {
+      background: var(--deep);
+      justify-content: space-between;
+      padding: 3rem;
+    }
+
+    .title-wordmark {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 0.75rem;
+    }
+    .title-wordmark .arch-mark {
+      filter: drop-shadow(0 0 6px rgba(160,196,184,0.5)) drop-shadow(0 0 2px rgba(238,244,250,0.3));
+    }
+    .title-wordmark-text {
+      font-family: 'Cormorant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1rem;
+      color: rgba(238,244,250,0.4);
+      font-optical-sizing: auto;
+    }
+
+    .title-center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+    .title-heading {
+      font-family: 'Cormorant', serif;
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--sky);
+      margin-bottom: 2rem;
+      font-optical-sizing: auto;
+    }
+    .title-heading em { font-style: italic; font-weight: 200; color: var(--sage-l); }
+
+    .title-quote {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(0.9rem, 1.4vw, 1.2rem);
+      line-height: 1.75;
+      color: rgba(238,244,250,0.62);
+      max-width: 340px;
+      font-optical-sizing: auto;
+      margin-bottom: 0.75rem;
+    }
+
+    .title-cite {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--sage);
+    }
+
+    .title-bottom {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(238,244,250,0.2);
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .title-bottom:hover { color: rgba(238,244,250,0.5); }
+
+    /* ════════════════════════════════
+       PAGE 1 — LIBRARY
+    ════════════════════════════════ */
+
+    .library-inner {
+      background: var(--sky);
+    }
+
+    .lib-scroll {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .lib-scroll::-webkit-scrollbar { display: none; }
+
+    /* Nav */
+    .lib-nav {
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--sky-3);
+      position: sticky;
+      top: 0;
+      background: var(--sky);
+      z-index: 50;
+    }
+
+    .lib-nav-mark {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 0.625rem;
+    }
+    .lib-nav-mark .arch-mark {
+      filter: drop-shadow(0 0 6px rgba(91,158,136,0.5)) drop-shadow(0 0 2px rgba(91,158,136,0.3));
+    }
+    .lib-nav-mark-text {
+      font-family: 'Cormorant', serif;
+      font-size: 1rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--ink);
+      font-optical-sizing: auto;
+    }
+
+    .lib-nav-count {
+      font-size: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .lib-nav-count em {
+      font-style: normal;
+      font-family: 'Cormorant', serif;
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--sage);
+      letter-spacing: 0;
+      font-optical-sizing: auto;
+    }
+
+    /* Featured */
+    .lib-featured {
+      display: block;
+      background: var(--deep-2);
+      padding: 1.75rem 2rem;
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 1px solid rgba(238,244,250,0.05);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .lib-featured:hover { background: #2A3451; }
+
+    .lib-featured-label {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.625rem;
+    }
+
+    .lib-featured-title {
+      font-family: 'Cormorant', serif;
+      font-size: clamp(1.125rem, 2.5vw, 1.875rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--sky);
+      margin-bottom: 0.5rem;
+      font-optical-sizing: auto;
+    }
+
+    .lib-featured-story {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: rgba(238,244,250,0.88);
+      margin-bottom: 1rem;
+      font-optical-sizing: auto;
+    }
+
+    .lib-featured-meta {
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .lib-featured-meta-item { display: flex; flex-direction: column; gap: 0.15rem; }
+
+    .lib-featured-meta-label {
+      font-size: 0.375rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(238,244,250,0.55);
+    }
+
+    .lib-featured-meta-value {
+      font-family: 'Cormorant', serif;
+      font-size: 0.8125rem;
+      font-weight: 400;
+      color: var(--sage-l);
+      font-optical-sizing: auto;
+    }
+
+    .lib-featured-cta {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(238,244,250,0.75);
+    }
+
+    /* Controls */
+    .lib-controls {
+      background: var(--sky-2);
+      border-bottom: 1px solid var(--sky-3);
+      padding: 0.75rem 2rem;
+    }
+
+    .lib-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      flex-wrap: wrap;
+    }
+    .lib-controls-row + .lib-controls-row { margin-top: 0.4rem; }
+
+    .ctrl-label {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-right: 0.2rem;
+    }
+
+    .filter-btn, .sort-btn {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.4375rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.45rem;
+      border: 1.5px solid var(--sky-3);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover, .sort-btn:hover { color: var(--ink); border-color: var(--ink-mid); }
+    .filter-btn.active { background: var(--ink); border-color: var(--ink); color: var(--sky); }
+    .sort-btn.active   { color: var(--sage); border-color: var(--sage); }
+
+    /* Collection */
+    .lib-collection { padding: 0 2rem 3rem; }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1.5rem 0 0;
+    }
+
+    /* Card */
+    .card {
+      background: var(--sky-card);
+      padding: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+      transition: background 0.18s, box-shadow 0.18s, transform 0.18s;
+      box-shadow: 0 1px 6px rgba(28,35,51,0.07);
+    }
+    .card:hover {
+      background: var(--sky-2);
+      box-shadow: 0 4px 16px rgba(28,35,51,0.12);
+      transform: translateY(-2px);
+    }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+
+    .card-cat {
+      font-size: 0.375rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sage);
+    }
+
+    .card-num {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.625rem;
+      color: var(--muted);
+      opacity: 0.45;
+      font-optical-sizing: auto;
+    }
+
+    .card-title {
+      font-family: 'Cormorant', serif;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      font-optical-sizing: auto;
+    }
+
+    .card-story {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.6875rem;
+      line-height: 1.6;
+      color: var(--muted);
+      font-optical-sizing: auto;
+      flex: 1;
+    }
+
+    .card-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.375rem 0.5rem;
+      padding-top: 0.625rem;
+      border-top: 1px solid var(--faint);
+    }
+
+    .meta-pill { display: flex; flex-direction: column; gap: 0.1rem; }
+
+    .meta-label {
+      font-size: 0.3125rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    .meta-value {
+      font-family: 'Cormorant', serif;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--ink-mid);
+      letter-spacing: -0.01em;
+      font-optical-sizing: auto;
+    }
+
+    .dots { display: flex; gap: 3px; margin-top: 0.1rem; }
+    .dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      border: 1.5px solid var(--sky-3);
+      background: transparent;
+    }
+    .dot.on-easy   { background: var(--sage); border-color: var(--sage); }
+    .dot.on-medium { background: var(--gold); border-color: var(--gold); }
+    .dot.on-hard   { background: var(--ink);  border-color: var(--ink); }
+
+    /* Quote break */
+    .quote-break {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--sky-3);
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .quote-mark {
+      font-family: 'Cormorant', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--sage);
+      opacity: 0.22;
+      line-height: 1;
+      font-optical-sizing: auto;
+      margin-top: -0.5rem;
+    }
+
+    .quote-body blockquote {
+      font-family: 'Cormorant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(0.875rem, 1.4vw, 1.125rem);
+      line-height: 1.65;
+      color: var(--ink-mid);
+      margin-bottom: 0.5rem;
+      font-optical-sizing: auto;
+    }
+
+    .quote-body cite {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      font-style: normal;
+    }
+
+    .empty {
+      grid-column: 1/-1;
+      padding: 2rem;
+      text-align: center;
+      display: none;
+    }
+    .empty.show { display: block; }
+    .empty p {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.875rem;
+      color: var(--muted);
+      font-optical-sizing: auto;
+    }
+
+    /* Library footer */
+    .lib-footer {
+      background: var(--deep);
+      padding: 1.25rem 2rem;
+      margin-top: 1rem;
+    }
+
+    .lib-footer-title {
+      font-family: 'Cormorant', serif;
+      font-style: italic;
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: rgba(238,244,250,0.35);
+      font-optical-sizing: auto;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .lib-footer-sub {
+      font-size: 0.4375rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(238,244,250,0.18);
+      display: block;
+    }
+
+    /* ════════════════════════════════
+       PAGE 2 — RECIPE LEFT (IMAGE)
+    ════════════════════════════════ */
+
+    .recipe-left-inner {
+      background: var(--cream);
+    }
+
+    .spread-img-wrap {
+      flex-shrink: 0;
+      height: 58%;
+      position: relative;
+    }
+
+    .spread-hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .spread-img-fade {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(to bottom, transparent 0%, var(--cream) 100%);
+      pointer-events: none;
+    }
+
+    .spread-hero-blank {
+      flex-shrink: 0;
+      height: 58%;
+      background: var(--sky-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spread-ghost-num {
+      font-family: 'Cormorant', serif;
+      font-weight: 200;
+      font-style: italic;
+      font-size: clamp(5rem, 12vw, 10rem);
+      line-height: 1;
+      color: rgba(28,35,51,0.05);
+      letter-spacing: -0.05em;
+      font-optical-sizing: auto;
+      user-select: none;
+    }
+
+    .spread-left-content {
+      flex: 1;
+      padding: 2rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .spread-left-cat {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 0.75rem;
+    }
+
+    .spread-left-title {
+      font-family: 'Cormorant', serif;
+      font-size: clamp(1.5rem, 3vw, 2.75rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+      font-optical-sizing: auto;
+    }
+
+    .spread-left-meta {
+      font-size: 0.4375rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* ════════════════════════════════
+       PAGE 3 — RECIPE RIGHT (TEXT)
+    ════════════════════════════════ */
+
+    .recipe-right-inner {
+      background: var(--cream);
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .recipe-right-inner::-webkit-scrollbar { display: none; }
+
+    /* Back bar */
+    .recipe-back-bar {
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(28,35,51,0.08);
+      position: sticky;
+      top: 0;
+      background: var(--cream);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .recipe-back-btn {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0;
+      transition: color 0.15s;
+    }
+    .recipe-back-btn:hover { color: var(--ink); }
+
+    .recipe-back-num {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.6875rem;
+      color: rgba(28,35,51,0.3);
+      font-optical-sizing: auto;
+    }
+
+    /* Recipe hero (dark header) */
+    .recipe-hero {
+      background: var(--deep);
+      padding: 2rem 2rem 1.75rem;
+    }
+
+    .recipe-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+    }
+
+    .recipe-hero-cat {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--sage);
+    }
+
+    .recipe-hero-num {
+      font-family: 'Cormorant', serif;
+      font-style: italic;
+      font-weight: 200;
+      font-size: 0.75rem;
+      color: rgba(238,244,250,0.4);
+      font-optical-sizing: auto;
+    }
+
+    .recipe-hero-title {
+      font-family: 'Cormorant', serif;
+      font-size: clamp(1.5rem, 2.75vw, 2.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: #EEF4FA;
+      margin-bottom: 1.5rem;
+      font-optical-sizing: auto;
+    }
+
+    .recipe-hero-meta {
+      display: flex;
+      gap: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(238,244,250,0.1);
+    }
+
+    .recipe-hero-meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+
+    .recipe-hero-meta-label {
+      font-size: 0.375rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(238,244,250,0.5);
+    }
+
+    .recipe-hero-meta-value {
+      font-family: 'Cormorant', serif;
+      font-size: 0.9375rem;
+      font-weight: 400;
+      color: var(--sage-l);
+      font-optical-sizing: auto;
+    }
+
+    /* Recipe body */
+    .recipe-body { padding: 1.75rem 2rem; }
+
+    .recipe-story {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.9375rem;
+      line-height: 1.8;
+      color: var(--ink-mid);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--faint);
+      font-optical-sizing: auto;
+    }
+
+    .recipe-section-label {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.875rem;
+    }
+
+    .ingredient-group { margin-bottom: 1rem; }
+
+    .ingredient-group-name {
+      font-size: 0.375rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 0.5rem;
+    }
+
+    .ingredient-list { list-style: none; }
+
+    .ingredient-list li {
+      font-family: 'Cormorant', serif;
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--ink);
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--faint);
+      font-optical-sizing: auto;
+    }
+
+    .method-section { margin-top: 1.5rem; }
+
+    .method-list { list-style: none; }
+
+    .method-step {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 0.75rem;
+      padding: 0.875rem 0;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .step-num {
+      font-family: 'Cormorant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.875rem;
+      color: var(--muted);
+      opacity: 0.5;
+      font-optical-sizing: auto;
+      padding-top: 0.1rem;
+    }
+
+    .step-text {
+      font-family: 'Cormorant', serif;
+      font-size: 0.875rem;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--ink);
+      font-optical-sizing: auto;
+    }
+
+    /* Notes section */
+    .recipe-notes {
+      background: var(--deep);
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .recipe-notes-label {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 1rem;
+    }
+
+    .recipe-notes-text {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.9375rem;
+      line-height: 1.8;
+      color: rgba(238,244,250,0.88);
+      margin-bottom: 1.5rem;
+      font-optical-sizing: auto;
+    }
+
+    .recipe-credit {
+      font-size: 0.4375rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(238,244,250,0.45);
+      border-top: 1px solid rgba(238,244,250,0.1);
+      padding-top: 1.25rem;
+    }
+
+    /* Stub */
+    .recipe-stub {
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .recipe-stub p {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--muted);
+      font-optical-sizing: auto;
+    }
+
+    /* ── Mobile ── */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 1000;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @media (max-width: 768px) {
+      #flipbook { display: none; }
+      body { overflow: auto; background: var(--sky); }
+      .mobile-overlay { display: block; }
+      .mobile-overlay.open { transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="spine-shadow"></div>
+
+<div id="flipbook">
+
+  <!-- ══════════════════════════════
+       PAGE 0 — TITLE / LEFT SIDE
+  ══════════════════════════════ -->
+  <div class="ftk-page">
+    <div class="page-inner title-inner">
+      <span class="title-wordmark">
+        <svg class="arch-mark" width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M10 42 L10 22 Q10 8 24 8 Q38 8 38 22 L38 42" stroke="rgba(238,244,250,0.55)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="title-wordmark-text">From the Kitchen</span>
+      </span>
+      <div class="title-center">
+        <h1 class="title-heading">The<br><em>Collection.</em></h1>
+        <p class="title-quote">"Some meals don't have a reason you can explain. Some just feel necessary — for you, for someone else, for the room."</p>
+        <span class="title-cite">From the Kitchen</span>
+      </div>
+      <span class="title-bottom" onclick="if(pageFlip) pageFlip.flipNext('bottom')">Turn the page to begin →</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       PAGE 1 — LIBRARY / RIGHT SIDE
+  ══════════════════════════════ -->
+  <div class="ftk-page">
+    <div class="page-inner library-inner">
+      <nav class="lib-nav">
+        <span class="lib-nav-mark">
+          <svg class="arch-mark" width="36" height="36" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <path d="M10 42 L10 22 Q10 8 24 8 Q38 8 38 22 L38 42" stroke="#1C2333" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="lib-nav-mark-text">From the Kitchen</span>
+        </span>
+        <span class="lib-nav-count"><em id="count">12</em> recipes</span>
+      </nav>
+      <div class="lib-scroll">
+
+        <div class="lib-featured" id="featured-card" data-num="2">
+          <div class="lib-featured-label">The Recipe to Start With</div>
+          <div class="lib-featured-title">Braised Short Ribs with Red Wine</div>
+          <div class="lib-featured-story">Sunday cooking. The kind that fills the whole house and asks nothing of you but time.</div>
+          <div class="lib-featured-meta">
+            <div class="lib-featured-meta-item">
+              <span class="lib-featured-meta-label">Time</span>
+              <span class="lib-featured-meta-value">3 hours</span>
+            </div>
+            <div class="lib-featured-meta-item">
+              <span class="lib-featured-meta-label">Serves</span>
+              <span class="lib-featured-meta-value">6</span>
+            </div>
+            <div class="lib-featured-meta-item">
+              <span class="lib-featured-meta-label">Season</span>
+              <span class="lib-featured-meta-value">Winter</span>
+            </div>
+            <div class="lib-featured-meta-item">
+              <span class="lib-featured-meta-label">No.</span>
+              <span class="lib-featured-meta-value">02</span>
+            </div>
+          </div>
+          <div class="lib-featured-cta">Open recipe →</div>
+        </div>
+
+        <div class="lib-controls">
+          <div class="lib-controls-row">
+            <span class="ctrl-label">Filter</span>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="slow cook">Slow Cook</button>
+            <button class="filter-btn" data-filter="pasta">Pasta</button>
+            <button class="filter-btn" data-filter="seafood">Seafood</button>
+            <button class="filter-btn" data-filter="breakfast">Breakfast</button>
+            <button class="filter-btn" data-filter="baking">Baking</button>
+            <button class="filter-btn" data-filter="vegetarian">Vegetarian</button>
+            <button class="filter-btn" data-filter="quick">Quick</button>
+          </div>
+          <div class="lib-controls-row">
+            <span class="ctrl-label">Sort</span>
+            <button class="sort-btn active" data-sort="number">Number</button>
+            <button class="sort-btn" data-sort="time">Time</button>
+            <button class="sort-btn" data-sort="season">Season</button>
+            <button class="sort-btn" data-sort="name">Name A–Z</button>
+          </div>
+        </div>
+
+        <div class="lib-collection">
+
+          <div class="recipe-grid" id="grid-1">
+
+            <div class="card" data-num="2" data-cat="slow cook" data-time="180" data-season="winter" data-name="Braised Short Ribs">
+              <div class="card-header"><span class="card-cat">Slow Cook</span><span class="card-num">No. 02</span></div>
+              <div class="card-title">Braised Short Ribs with Red Wine</div>
+              <div class="card-story">Sunday cooking. The kind that fills the whole house and asks nothing of you but time.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">3 hours</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">6</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Winter</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-medium"></div><div class="dot on-medium"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="7" data-cat="pasta" data-time="45" data-season="summer" data-name="Roasted Tomato Pasta">
+              <div class="card-header"><span class="card-cat">Pasta</span><span class="card-num">No. 07</span></div>
+              <div class="card-title">Roasted Tomato Pasta with Anchovy Butter</div>
+              <div class="card-story">The tomatoes get sweeter, the anchovies disappear into silk. This is the one I come back to.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">45 min</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">4</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Late Summer</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-easy"></div><div class="dot"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="3" data-cat="breakfast" data-time="25" data-season="any" data-name="Shakshuka">
+              <div class="card-header"><span class="card-cat">Breakfast</span><span class="card-num">No. 03</span></div>
+              <div class="card-title">Shakshuka with Feta & Herbs</div>
+              <div class="card-story">Made this for a friend going through a hard month. Eggs poached in something warm.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">25 min</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">2</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Any</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-easy"></div><div class="dot"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="5" data-cat="seafood" data-time="20" data-season="any" data-name="Miso Glazed Salmon">
+              <div class="card-header"><span class="card-cat">Seafood</span><span class="card-num">No. 05</span></div>
+              <div class="card-title">Miso Glazed Salmon</div>
+              <div class="card-story">Lacquered, caramelised, done in twenty minutes. Feels like you have your life together.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">20 min</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">2</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Any</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-easy"></div><div class="dot"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="9" data-cat="baking" data-time="60" data-season="any" data-name="Brown Butter Banana Cake">
+              <div class="card-header"><span class="card-cat">Baking</span><span class="card-num">No. 09</span></div>
+              <div class="card-title">Brown Butter Banana Cake</div>
+              <div class="card-story">Better than banana bread. The brown butter is non-negotiable.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">1 hour</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">8</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Any</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-medium"></div><div class="dot on-medium"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="4" data-cat="slow cook" data-time="120" data-season="winter" data-name="Green Pozole">
+              <div class="card-header"><span class="card-cat">Slow Cook</span><span class="card-num">No. 04</span></div>
+              <div class="card-title">Green Pozole</div>
+              <div class="card-story">Tomatillos, hominy, pumpkin seeds. A bowl that takes its time and gives it back to you.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">2 hours</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">6</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Winter</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-medium"></div><div class="dot on-medium"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+            <div class="empty" id="empty"><p>Nothing in that category yet — the collection is always growing.</p></div>
+          </div>
+
+          <div class="quote-break">
+            <div class="quote-mark">"</div>
+            <div class="quote-body">
+              <blockquote>Sometimes just seeing someone on the street who could use time with someone who cares — and a nice meal — inspires something to cook.</blockquote>
+              <cite>On why we cook</cite>
+            </div>
+          </div>
+
+          <div class="recipe-grid" id="grid-2">
+
+            <div class="card" data-num="6" data-cat="vegetarian" data-time="45" data-season="any" data-name="Lentil Soup">
+              <div class="card-header"><span class="card-cat">Vegetarian</span><span class="card-num">No. 06</span></div>
+              <div class="card-title">Lentil Soup with Crispy Shallots</div>
+              <div class="card-story">The one I make when someone needs feeding and I don't know what else to say.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">45 min</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">4</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Any</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-easy"></div><div class="dot"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="1" data-cat="baking" data-time="240" data-season="any" data-name="Country Sourdough">
+              <div class="card-header"><span class="card-cat">Baking</span><span class="card-num">No. 01</span></div>
+              <div class="card-title">Country Sourdough</div>
+              <div class="card-story">Started because I couldn't sleep. Now I make it every week.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">4 hours</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">8</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Any</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-hard"></div><div class="dot on-hard"></div><div class="dot on-hard"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="8" data-cat="quick" data-time="8" data-season="any" data-name="Soft Scrambled Eggs">
+              <div class="card-header"><span class="card-cat">Quick</span><span class="card-num">No. 08</span></div>
+              <div class="card-title">Soft Scrambled Eggs on Toast</div>
+              <div class="card-story">Low heat. More time than you think. Worth every minute.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">8 min</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">1</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Any</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-easy"></div><div class="dot"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="quote-break">
+            <div class="quote-mark">"</div>
+            <div class="quote-body">
+              <blockquote>A kitchen is never just a kitchen. It's where we figure things out. Where we show up for people.</blockquote>
+              <cite>From the Kitchen</cite>
+            </div>
+          </div>
+
+          <div class="recipe-grid" id="grid-3">
+
+            <div class="card" data-num="10" data-cat="slow cook" data-time="90" data-season="spring" data-name="Chicken Cacciatore">
+              <div class="card-header"><span class="card-cat">Slow Cook</span><span class="card-num">No. 10</span></div>
+              <div class="card-title">Chicken Cacciatore</div>
+              <div class="card-story">Olives, capers, white wine. Italian grandmother energy — whether or not you have one.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">1.5 hours</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">4</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Spring</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-medium"></div><div class="dot on-medium"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="11" data-cat="vegetarian" data-time="10" data-season="summer" data-name="Burrata with Peaches">
+              <div class="card-header"><span class="card-cat">Vegetarian</span><span class="card-num">No. 11</span></div>
+              <div class="card-title">Burrata with Peaches & Basil</div>
+              <div class="card-story">August on a plate. Barely a recipe. Mostly just knowing when to stop.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">10 min</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">4</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Summer</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-easy"></div><div class="dot"></div><div class="dot"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="12" data-cat="pasta" data-time="25" data-season="any" data-name="Cacio e Pepe">
+              <div class="card-header"><span class="card-cat">Pasta</span><span class="card-num">No. 12</span></div>
+              <div class="card-title">Cacio e Pepe</div>
+              <div class="card-story">Three ingredients. One technique. Takes ten tries to get right and then you never forget it.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">25 min</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">2</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Any</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-hard"></div><div class="dot on-hard"></div><div class="dot on-hard"></div></div></div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="quote-break" style="border-bottom:none;padding-bottom:0">
+            <div class="quote-mark">"</div>
+            <div class="quote-body">
+              <blockquote>Anyone who needs to feel taken care of. Including yourself.</blockquote>
+              <cite>From the notes — Braised Short Ribs, Recipe No. 02</cite>
+            </div>
+          </div>
+
+        </div><!-- end lib-collection -->
+
+        <div class="lib-footer">
+          <span class="lib-footer-title">From the Kitchen</span>
+          <span class="lib-footer-sub">A personal collection — always growing</span>
+        </div>
+
+      </div><!-- end lib-scroll -->
+    </div><!-- end page-inner -->
+  </div><!-- end page 1 -->
+
+  <!-- ══════════════════════════════
+       PAGE 2 — RECIPE LEFT (IMAGE)
+  ══════════════════════════════ -->
+  <div class="ftk-page" id="page-recipe-left">
+    <div class="page-inner recipe-left-inner" id="recipe-left-inner">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       PAGE 3 — RECIPE RIGHT (TEXT)
+  ══════════════════════════════ -->
+  <div class="ftk-page" id="page-recipe-right">
+    <div class="page-inner recipe-right-inner" id="recipe-right-inner">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+</div><!-- end flipbook -->
+
+<!-- Mobile fallback -->
+<div class="mobile-overlay" id="mobile-overlay">
+  <div id="mobile-content"></div>
+</div>
+
+<script>
+  /* ── Recipe Data ── */
+  const recipes = {
+    '1': { num:'01', cat:'Baking', title:'Country Sourdough', time:'4 hours', serves:'8', season:'Any', difficulty:'hard', stub:true, story:"Started because I couldn't sleep. Now I make it every week." },
+    '2': {
+      num:'02', cat:'Slow Cook', title:'Braised Short Ribs with Red Wine',
+      time:'3 hours', serves:'6', season:'Winter', difficulty:'medium', stub:false,
+      image:'https://images.unsplash.com/photo-1747972312968-daeb233e6bcb?w=1200&q=85',
+      story:"There's a man I pass sometimes — different corners, always carrying the same weight. One afternoon I had short ribs going and thought about what it would mean to bring a meal to someone on a street corner. Not a gesture. A real meal, still warm, the kind that says: I saw you today.\n\nThese short ribs are for that impulse. The long braise, the deep wine reduction — it asks nothing of you but attention, which is the same thing kindness asks.",
+      ingredientGroups:[
+        { name:'For the braise', items:['6 bone-in beef short ribs (about 4 lbs)','2 tsp kosher salt','1 tsp black pepper','3 tbsp neutral oil','1 bottle dry red wine (Côtes du Rhône)','2 cups beef stock','2 tbsp tomato paste'] },
+        { name:'Aromatics', items:['1 large onion, roughly chopped','3 carrots, roughly chopped','4 celery stalks, roughly chopped','6 garlic cloves, smashed','3 sprigs fresh thyme','2 sprigs fresh rosemary','2 bay leaves'] }
+      ],
+      method:[
+        'Heat oven to 325°F. Pat ribs completely dry — this matters.',
+        'Season generously with salt and pepper on all sides.',
+        'In a heavy Dutch oven, heat oil over high until shimmering. Brown ribs in batches, 3–4 minutes per side. Do not crowd. Set aside.',
+        'Reduce heat to medium. Add onion, carrots, celery. Cook 8 minutes until soft and just beginning to color.',
+        'Add garlic and tomato paste. Stir 2 minutes — let the paste deepen.',
+        'Pour in the wine. Scrape every bit off the bottom. Reduce by half, about 10 minutes.',
+        'Add stock, herbs, and return the ribs. Liquid should come two-thirds up the ribs.',
+        'Bring to a simmer, cover tightly, and transfer to the oven.',
+        'Braise 2½ to 3 hours. The meat should offer no resistance to a fork.',
+        'Remove ribs carefully. Strain the braising liquid, skim the fat, reduce on the stovetop until it coats a spoon.',
+        'Return ribs to the pot. Rest 15 minutes before serving.'
+      ],
+      notes:"Make it the day before. The fat lifts cleanly when chilled, and the flavors deepen overnight. Serve over soft polenta, mashed potatoes, or just with good bread and someone worth feeding.\n\nFor: anyone who needs to feel taken care of. Including yourself.",
+      credit:'Recipe by Claude'
+    },
+    '3':  { num:'03', cat:'Breakfast', title:'Shakshuka with Feta & Herbs', time:'25 min', serves:'2', season:'Any', difficulty:'easy', stub:true, story:"Made this for a friend going through a hard month. Eggs poached in something warm." },
+    '4':  { num:'04', cat:'Slow Cook', title:'Green Pozole', time:'2 hours', serves:'6', season:'Winter', difficulty:'medium', stub:true, story:"Tomatillos, hominy, pumpkin seeds. A bowl that takes its time and gives it back to you." },
+    '5':  { num:'05', cat:'Seafood', title:'Miso Glazed Salmon', time:'20 min', serves:'2', season:'Any', difficulty:'easy', stub:true, story:"Lacquered, caramelised, done in twenty minutes. Feels like you have your life together." },
+    '6':  { num:'06', cat:'Vegetarian', title:'Lentil Soup with Crispy Shallots', time:'45 min', serves:'4', season:'Any', difficulty:'easy', stub:true, story:"The one I make when someone needs feeding and I don't know what else to say." },
+    '7':  { num:'07', cat:'Pasta', title:'Roasted Tomato Pasta with Anchovy Butter', time:'45 min', serves:'4', season:'Late Summer', difficulty:'easy', stub:true, story:"The tomatoes get sweeter, the anchovies disappear into silk. This is the one I come back to." },
+    '8':  { num:'08', cat:'Quick', title:'Soft Scrambled Eggs on Toast', time:'8 min', serves:'1', season:'Any', difficulty:'easy', stub:true, story:"Low heat. More time than you think. Worth every minute." },
+    '9':  { num:'09', cat:'Baking', title:'Brown Butter Banana Cake', time:'1 hour', serves:'8', season:'Any', difficulty:'medium', stub:true, story:"Better than banana bread. The brown butter is non-negotiable." },
+    '10': { num:'10', cat:'Slow Cook', title:'Chicken Cacciatore', time:'1.5 hours', serves:'4', season:'Spring', difficulty:'medium', stub:true, story:"Olives, capers, white wine. Italian grandmother energy — whether or not you have one." },
+    '11': { num:'11', cat:'Vegetarian', title:'Burrata with Peaches & Basil', time:'10 min', serves:'4', season:'Summer', difficulty:'easy', stub:true, story:"August on a plate. Barely a recipe. Mostly just knowing when to stop." },
+    '12': { num:'12', cat:'Pasta', title:'Cacio e Pepe', time:'25 min', serves:'2', season:'Any', difficulty:'hard', stub:true, story:"Three ingredients. One technique. Takes ten tries to get right and then you never forget it." }
+  };
+
+  /* ── Build recipe LEFT page ── */
+  function buildRecipeLeft(data) {
+    const top = data.image
+      ? `<div class="spread-img-wrap">
+           <img class="spread-hero-img" src="${data.image}" alt="${data.title}">
+           <div class="spread-img-fade"></div>
+         </div>`
+      : `<div class="spread-hero-blank"><div class="spread-ghost-num">${data.num}</div></div>`;
+
+    return top + `
+      <div class="spread-left-content">
+        <div class="spread-left-cat">${data.cat}</div>
+        <h2 class="spread-left-title">${data.title}</h2>
+        <div class="spread-left-meta">
+          <span>${data.time}</span><span>·</span>
+          <span>Serves ${data.serves}</span><span>·</span>
+          <span>${data.season}</span>
+        </div>
+      </div>`;
+  }
+
+  /* ── Build recipe RIGHT page ── */
+  function buildRecipeRight(data) {
+    const backBar = `
+      <div class="recipe-back-bar">
+        <button class="recipe-back-btn" onclick="closeRecipe()">← Collection</button>
+        <span class="recipe-back-num">Recipe No. ${data.num}</span>
+      </div>`;
+
+    const hero = `
+      <div class="recipe-hero">
+        <div class="recipe-hero-top">
+          <span class="recipe-hero-cat">${data.cat}</span>
+          <span class="recipe-hero-num">No. ${data.num}</span>
+        </div>
+        <h2 class="recipe-hero-title">${data.title}</h2>
+        <div class="recipe-hero-meta">
+          <div class="recipe-hero-meta-item">
+            <span class="recipe-hero-meta-label">Time</span>
+            <span class="recipe-hero-meta-value">${data.time}</span>
+          </div>
+          <div class="recipe-hero-meta-item">
+            <span class="recipe-hero-meta-label">Serves</span>
+            <span class="recipe-hero-meta-value">${data.serves}</span>
+          </div>
+          <div class="recipe-hero-meta-item">
+            <span class="recipe-hero-meta-label">Season</span>
+            <span class="recipe-hero-meta-value">${data.season}</span>
+          </div>
+        </div>
+      </div>`;
+
+    if (data.stub) {
+      return backBar + hero + `
+        <div class="recipe-stub">
+          <p>This one is still being written.<br>Come back soon.</p>
+        </div>`;
+    }
+
+    const storyHTML = data.story.split('\n\n').map(p => `<p class="recipe-story">${p}</p>`).join('');
+
+    const ingredientsHTML = data.ingredientGroups.map(g => `
+      <div class="ingredient-group">
+        <div class="ingredient-group-name">${g.name}</div>
+        <ul class="ingredient-list">
+          ${g.items.map(i => `<li>${i}</li>`).join('')}
+        </ul>
+      </div>`).join('');
+
+    const methodHTML = data.method.map((s, i) => `
+      <li class="method-step">
+        <span class="step-num">${i + 1}</span>
+        <span class="step-text">${s}</span>
+      </li>`).join('');
+
+    const notesHTML = data.notes.split('\n\n').map(p => `<p style="margin-bottom:.75rem">${p}</p>`).join('');
+
+    return backBar + hero + `
+      <div class="recipe-body">
+        ${storyHTML}
+        <div class="recipe-section-label">Ingredients</div>
+        ${ingredientsHTML}
+        <div class="method-section">
+          <div class="recipe-section-label">Method</div>
+          <ol class="method-list">${methodHTML}</ol>
+        </div>
+      </div>
+      <div class="recipe-notes">
+        <div class="recipe-notes-label">Notes</div>
+        <div class="recipe-notes-text">${notesHTML}</div>
+        ${data.credit ? `<div class="recipe-credit">${data.credit}</div>` : ''}
+      </div>`;
+  }
+
+  /* ── StPageFlip init ── */
+  let pageFlip;
+  const pageW = Math.ceil(window.innerWidth / 2);
+  const pageH = window.innerHeight;
+
+  window.addEventListener('load', () => {
+    pageFlip = new St.PageFlip(
+      document.getElementById('flipbook'),
+      {
+        width:               pageW,
+        height:              pageH,
+        size:                'fixed',
+        drawShadow:          true,
+        flippingTime:        1500,
+        usePortrait:         false,
+        showCover:           false,
+        maxShadowOpacity:    0.6,
+        useMouseEvents:      false,
+        clickEventForward:   false,
+        autoSize:            false,
+        startZIndex:         0,
+        mobileScrollSupport: false,
+      }
+    );
+
+    pageFlip.loadFromHTML(document.querySelectorAll('.ftk-page'));
+  });
+
+  /* ── Open a recipe ── */
+  function openRecipe(num) {
+    const data = recipes[String(num)];
+    if (!data) return;
+
+    document.getElementById('recipe-left-inner').innerHTML = buildRecipeLeft(data);
+    document.getElementById('recipe-right-inner').innerHTML = buildRecipeRight(data);
+    document.getElementById('recipe-right-inner').scrollTop = 0;
+
+    if (pageFlip) {
+      setTimeout(() => pageFlip.flip(2, 'bottom'), 30);
+    }
+  }
+
+  /* ── Close recipe ── */
+  function closeRecipe() {
+    if (pageFlip) {
+      pageFlip.flip(1, 'bottom');
+    }
+  }
+
+  /* ── Card & featured clicks ── */
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => openRecipe(card.dataset.num));
+  });
+
+  document.getElementById('featured-card').addEventListener('click', () => openRecipe(2));
+
+  /* ── Filter & Sort ── */
+  const allCards   = document.querySelectorAll('.card');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const sortBtns   = document.querySelectorAll('.sort-btn');
+  const countEl    = document.getElementById('count');
+  const emptyEl    = document.getElementById('empty');
+
+  let activeFilter = 'all';
+  let activeSort   = 'number';
+
+  function updateDisplay() {
+    const visible = [];
+    allCards.forEach(card => {
+      const show = activeFilter === 'all' || card.dataset.cat === activeFilter;
+      card.style.display = show ? '' : 'none';
+      if (show) visible.push(card);
+    });
+
+    ['grid-1','grid-2','grid-3'].forEach(id => {
+      const grid = document.getElementById(id);
+      if (!grid) return;
+      const gridCards = [...grid.querySelectorAll('.card')].filter(c => c.style.display !== 'none');
+      gridCards.sort((a, b) => {
+        if (activeSort === 'number') return +a.dataset.num - +b.dataset.num;
+        if (activeSort === 'time')   return +a.dataset.time - +b.dataset.time;
+        if (activeSort === 'name')   return a.dataset.name.localeCompare(b.dataset.name);
+        if (activeSort === 'season') return a.dataset.season.localeCompare(b.dataset.season);
+      });
+      gridCards.forEach(c => grid.appendChild(c));
+    });
+
+    countEl.textContent = visible.length;
+    if (emptyEl) emptyEl.classList.toggle('show', visible.length === 0);
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      updateDisplay();
+    });
+  });
+
+  sortBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      sortBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeSort = btn.dataset.sort;
+      updateDisplay();
+    });
+  });
+</script>
+</body>
+</html>
