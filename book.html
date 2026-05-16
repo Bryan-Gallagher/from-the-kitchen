@@ -364,6 +364,16 @@
       transform: translateY(-2px);
     }
 
+    @keyframes stubPulse {
+      0%   { opacity: 1; }
+      30%  { opacity: 0.4; }
+      60%  { opacity: 0.85; }
+      100% { opacity: 1; }
+    }
+    .card.stub-pulse { animation: stubPulse 0.7s ease-out; }
+    .card[data-stub="true"] { cursor: default; }
+    .card[data-stub="true"]:hover { transform: none; box-shadow: 0 1px 6px rgba(28,35,51,0.07); }
+
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
 
     .card-cat {
@@ -913,24 +923,24 @@
 
       /* ── Library nav ── */
       .lib-nav { padding: 1rem 1.25rem; }
-      .lib-nav-mark-text { font-size: 1.1rem; }
-      .lib-nav-count { font-size: 0.625rem; }
-      .lib-nav-count em { font-size: 1rem; }
+      .lib-nav-mark-text { font-size: 1.25rem; }
+      .lib-nav-count { font-size: 0.6875rem; }
+      .lib-nav-count em { font-size: 1.125rem; }
 
       /* ── Featured card ── */
       .lib-featured { padding: 1.25rem; }
-      .lib-featured-label { font-size: 0.5625rem; }
-      .lib-featured-title { font-size: 1.5rem; }
-      .lib-featured-story { font-size: 0.9375rem; }
-      .lib-featured-meta-label { font-size: 0.5rem; }
-      .lib-featured-meta-value { font-size: 1rem; }
-      .lib-featured-cta { font-size: 0.5625rem; }
+      .lib-featured-label { font-size: 0.625rem; }
+      .lib-featured-title { font-size: 1.625rem; }
+      .lib-featured-story { font-size: 1rem; }
+      .lib-featured-meta-label { font-size: 0.5625rem; }
+      .lib-featured-meta-value { font-size: 1.0625rem; }
+      .lib-featured-cta { font-size: 0.625rem; }
 
       /* ── Filters ── */
-      .filter-bar { padding: 0.75rem 1.25rem; gap: 0.375rem; flex-wrap: wrap; }
-      .filter-btn { font-size: 0.5rem; padding: 0.4rem 0.75rem; }
-      .sort-bar { padding: 0.5rem 1.25rem; }
-      .sort-btn { font-size: 0.5rem; }
+      .filter-bar { padding: 0.875rem 1.25rem; gap: 0.5rem; flex-wrap: wrap; }
+      .filter-btn { font-size: 0.5625rem; padding: 0.5rem 0.875rem; }
+      .sort-bar { padding: 0.625rem 1.25rem; }
+      .sort-btn { font-size: 0.5625rem; }
 
       /* ── Cards: 2 per row ── */
       .card-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; padding: 0.75rem; }
@@ -1441,21 +1451,25 @@
   });
 
   /* ── Open a recipe ── */
-  function openRecipe(num) {
+  function openRecipe(num, cardEl) {
     const data = recipes[String(num)];
     if (!data) return;
+
+    /* Stubs: pulse the card and bail — don't open blank pages */
+    if (data.stub) {
+      if (cardEl) {
+        cardEl.classList.add('stub-pulse');
+        setTimeout(() => cardEl.classList.remove('stub-pulse'), 700);
+      }
+      return;
+    }
 
     document.getElementById('recipe-left-inner').innerHTML = buildRecipeLeft(data);
     document.getElementById('recipe-right-inner').innerHTML = buildRecipeRight(data);
     document.getElementById('recipe-right-inner').scrollTop = 0;
 
     if (pageFlip) {
-      if (isMobile) {
-        /* Portrait: flip to image page first, "Read recipe" button goes to text */
-        setTimeout(() => pageFlip.flip(2, 'bottom'), 30);
-      } else {
-        setTimeout(() => pageFlip.flip(2, 'bottom'), 30);
-      }
+      setTimeout(() => pageFlip.flip(2, 'bottom'), 30);
     }
   }
 
@@ -1473,7 +1487,9 @@
 
   /* ── Card & featured clicks ── */
   document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => openRecipe(card.dataset.num));
+    const data = recipes[card.dataset.num];
+    if (data && data.stub) card.dataset.stub = 'true';
+    card.addEventListener('click', () => openRecipe(card.dataset.num, card));
   });
 
   document.getElementById('featured-card').addEventListener('click', () => openRecipe(2));
