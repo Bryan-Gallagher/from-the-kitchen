@@ -100,6 +100,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
     /* ════════════════════════════════
@@ -370,6 +371,21 @@
 
     /* Collection */
     .lib-collection { padding: 0 2rem 3rem; }
+
+    .filter-description {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1.0625rem;
+      line-height: 1.8;
+      color: var(--ink-mid);
+      padding: 1.5rem 1.75rem 0.5rem;
+      max-width: 560px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .filter-description.visible { opacity: 1; }
 
     .recipe-grid {
       display: grid;
@@ -833,11 +849,12 @@
 
     .method-step {
       display: grid;
-      grid-template-columns: 20px 1fr;
+      grid-template-columns: auto 1fr;
       gap: 0.75rem;
       padding: 0.875rem 0;
       border-bottom: 1px solid var(--faint);
     }
+    .step-num { min-width: 1.25rem; }
 
     .step-num {
       font-family: 'Cormorant', serif;
@@ -1004,6 +1021,123 @@
       .quote-break { padding: 1.5rem 1.25rem; }
       .quote-break blockquote { font-size: 1rem; }
     }
+    /* ══════════════════════════════
+       ARCH ENTRANCE
+    ══════════════════════════════ */
+    .arch-entrance {
+      position: absolute;
+      inset: 0;
+      background: var(--deep);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .arch-entrance.doors-open {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2.2s ease-in 1.2s;
+    }
+    .arch-entrance-logo {
+      margin-bottom: 2.25rem;
+      opacity: 0.35;
+    }
+    .arch-door-clip {
+      width: clamp(210px, 44%, 290px);
+      height: clamp(380px, 66vh, 540px);
+      border-radius: 50% 50% 0 0 / 22% 22% 0 0;
+      overflow: hidden;
+      border: 1.5px solid rgba(184,144,10,0.4);
+      box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 0 0 4px rgba(184,144,10,0.06) inset;
+    }
+    .arch-door-unit {
+      width: 100%;
+      height: 100%;
+      perspective: 1100px;
+      display: flex;
+    }
+    .arch-door-L,
+    .arch-door-R {
+      width: 50%;
+      height: 100%;
+      position: relative;
+      background:
+        repeating-linear-gradient(
+          93deg,
+          transparent,
+          transparent 3px,
+          rgba(0,0,0,0.06) 3px,
+          rgba(0,0,0,0.06) 5px
+        ),
+        linear-gradient(172deg, #6b4228 0%, #3d2410 22%, #7a4e30 44%, #3a220e 66%, #5c3620 84%, #4a2c18 100%);
+      transition: transform 1.3s cubic-bezier(0.65, 0, 0.1, 1);
+      backface-visibility: hidden;
+    }
+    .arch-door-L { transform-origin: left center; border-right: 1px solid rgba(120,70,30,0.6); }
+    .arch-door-R { transform-origin: right center; }
+    /* raised panels */
+    .arch-door-L::before, .arch-door-R::before {
+      content: '';
+      position: absolute;
+      left: 14%; right: 14%;
+      top: 7%; height: 28%;
+      border: 1px solid rgba(180,120,60,0.25);
+      border-radius: 2px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .arch-door-L::after, .arch-door-R::after {
+      content: '';
+      position: absolute;
+      left: 14%; right: 14%;
+      top: 42%; bottom: 8%;
+      border: 1px solid rgba(180,120,60,0.25);
+      border-radius: 2px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .door-knob {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #f0d080, #b8900a);
+      box-shadow: 0 0 8px rgba(184,144,10,0.6), 0 1px 3px rgba(0,0,0,0.5);
+    }
+    .arch-door-L .door-knob { right: 9%; }
+    .arch-door-R .door-knob { left: 9%; }
+    .arch-entrance.doors-open .arch-door-L { transform: rotateY(-108deg); }
+    .arch-entrance.doors-open .arch-door-R { transform: rotateY(108deg); }
+    .arch-light {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+      transition: background 1.2s ease 0.3s;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .arch-entrance.doors-open .arch-light {
+      background: radial-gradient(ellipse 70% 60% at 50% 52%,
+        rgba(255,235,140,0.55) 0%,
+        rgba(255,200,80,0.28) 35%,
+        rgba(220,160,40,0.10) 60%,
+        transparent 80%
+      );
+    }
+    .arch-enter-hint {
+      margin-top: 2rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(184,144,10,0.55);
+      position: relative;
+      z-index: 2;
+    }
+
   </style>
 </head>
 <body>
@@ -1028,7 +1162,7 @@
         <p class="title-quote">"Some meals don't have a reason you can explain. Some just feel necessary — for you, for someone else, for the room."</p>
         <span class="title-cite">From the Kitchen</span>
       </div>
-      <span class="title-bottom" onclick="if(pageFlip) pageFlip.flipNext('bottom')">Turn the page to begin →</span>
+      <span class="title-bottom"></span>
     </div>
   </div>
 
@@ -1037,6 +1171,19 @@
   ══════════════════════════════ -->
   <div class="ftk-page">
     <div class="page-inner library-inner">
+
+      <!-- ── Arch Entrance ── -->
+      <div class="arch-entrance" id="arch-entrance" onclick="openDoors()">
+        <div class="arch-light"></div>
+        <div class="arch-door-clip" style="position:relative;z-index:2">
+          <div class="arch-door-unit">
+            <div class="arch-door-L"><div class="door-knob"></div></div>
+            <div class="arch-door-R"><div class="door-knob"></div></div>
+          </div>
+        </div>
+        <span class="arch-enter-hint">Enter here</span>
+      </div>
+
       <nav class="lib-nav">
         <span class="lib-nav-mark">
           <svg class="arch-mark" width="36" height="36" viewBox="0 0 48 48" fill="none" aria-hidden="true">
@@ -1084,6 +1231,7 @@
             <button class="filter-btn" data-filter="baking">Baking</button>
             <button class="filter-btn" data-filter="vegetarian">Vegetarian</button>
             <button class="filter-btn" data-filter="quick">Quick</button>
+            <button class="filter-btn" data-filter="from scratch">From Scratch</button>
           </div>
           <div class="lib-controls-row">
             <span class="ctrl-label">Sort</span>
@@ -1093,6 +1241,8 @@
             <button class="sort-btn" data-sort="name">Name A–Z</button>
           </div>
         </div>
+
+        <div id="filter-description" class="filter-description"></div>
 
         <div class="lib-collection">
 
@@ -1110,15 +1260,15 @@
               </div>
             </div>
 
-            <div class="card" data-num="7" data-cat="pasta" data-time="45" data-season="summer" data-name="Roasted Tomato Pasta">
-              <div class="card-header"><span class="card-cat">Pasta</span><span class="card-num">No. 07</span></div>
-              <div class="card-title">Roasted Tomato Pasta with Anchovy Butter</div>
-              <div class="card-story">The tomatoes get sweeter, the anchovies disappear into silk. This is the one I come back to.</div>
+            <div class="card" data-num="7" data-cat="vegetarian" data-time="90" data-season="fall" data-name="Vegetarian Lasagna" style="cursor:pointer;">
+              <div class="card-header"><span class="card-cat">Vegetarian</span><span class="card-num">No. 07</span></div>
+              <div class="card-title">Vegetarian Lasagna</div>
+              <div class="card-story">The layers of time always come through in a nice lasagna. However you make it, Marinara wants to be invited.</div>
               <div class="card-meta">
-                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">45 min</span></div>
-                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">4</span></div>
-                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Late Summer</span></div>
-                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-easy"></div><div class="dot"></div><div class="dot"></div></div></div>
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">90–120 min</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">12</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Fall</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-easy"></div><div class="dot on-easy"></div><div class="dot"></div></div></div>
               </div>
             </div>
 
@@ -1320,7 +1470,7 @@
     '2': {
       num:'02', cat:'Slow Cook', title:'Braised Short Ribs with Red Wine',
       time:'3 hours', serves:'6', season:'Winter', difficulty:'medium', stub:false,
-      image:'Firefly_Rustic braised beef short ribs in a dark cast iron Dutch oven, bone-in, glistening re 101687.png',
+      image:'Food Pictures/Firefly_Rustic braised beef short ribs in a dark cast iron Dutch oven, bone-in, glistening re 101687.png',
       story:"Sometimes just seeing someone on the street who deserves a moment of time with someone who cares — and a nice meal — inspires something to cook.\n\nThese short ribs are for that impulse. The long braise, the deep wine reduction — it asks nothing of you but attention, which is the same thing kindness asks.",
       ingredientGroups:[
         { name:'For the braise', items:['6 bone-in beef short ribs (about 4 lbs)','2 tsp kosher salt','1 tsp black pepper','3 tbsp neutral oil','1 bottle dry red wine (Côtes du Rhône)','2 cups beef stock','2 tbsp tomato paste'] },
@@ -1346,7 +1496,55 @@
     '4':  { num:'04', cat:'Slow Cook', title:'Green Pozole', time:'2 hours', serves:'6', season:'Winter', difficulty:'medium', stub:true, story:"Tomatillos, hominy, pumpkin seeds. A bowl that takes its time and gives it back to you." },
     '5':  { num:'05', cat:'Seafood', title:'Miso Glazed Salmon', time:'20 min', serves:'2', season:'Any', difficulty:'easy', stub:true, story:"Lacquered, caramelised, done in twenty minutes. Feels like you have your life together." },
     '6':  { num:'06', cat:'Vegetarian', title:'Lentil Soup with Crispy Shallots', time:'45 min', serves:'4', season:'Any', difficulty:'easy', stub:true, story:"The one I make when someone needs feeding and I don't know what else to say." },
-    '7':  { num:'07', cat:'Pasta', title:'Roasted Tomato Pasta with Anchovy Butter', time:'45 min', serves:'4', season:'Late Summer', difficulty:'easy', stub:true, story:"The tomatoes get sweeter, the anchovies disappear into silk. This is the one I come back to." },
+    '7':  {
+      num:'07', cat:'Vegetarian', title:'Vegetarian Lasagna',
+      time:'90–120 min', serves:'12', season:'Fall', difficulty:'medium', stub:false,
+      image:'Food Pictures/Firefly_Gemini Flash_Baked veggie lasagna, pasta free with sliced zucchini, yellow squash, portabella mush 101687.png',
+      story:"You may find certain times in your life ask for different ways of eating. This dish is that. How you prepare it is up to you. I love cheese, but sometimes the body asks for a change, and vegan ricotta is a nice change of pace.\n\nThe layers of time always come through in a nice lasagna. However you make it, Marinara wants to be invited.",
+      ingredientGroups:[
+        { name:'For the Build', items:[
+          '3 zucchini, sliced on a mandolin lengthwise or in circles',
+          '3 yellow squash, sliced on a mandolin lengthwise or in circles',
+          '6 large portabella mushrooms, seared or roasted beforehand — sliced or whole',
+          '3 cups mozzarella, preferably Grande — or your favorite vegan mozzarella',
+          '½ cup fresh basil, chopped or torn',
+          '8 cups Marinara (about 2 mason jars)',
+          '— Ricotta mixture, see below',
+          '— Béchamel, optional'
+        ]},
+        { name:'Ricotta Mixture', items:[
+          '1–3 lbs ricotta or vegan ricotta',
+          '1 per lb egg, if making vegetarian',
+          '¼ cup per lb Parmigiano Reggiano or Pecorino, grated',
+          '½ tbsp per lb granulated garlic',
+          '— fresh parsley, chopped — as much as you like',
+          '1 tbsp kosher salt'
+        ]}
+      ],
+      method:[
+        { num:'—',              text:'Before You Start: Let the Oven Warm Up to You… Heat oven to 425°F.' },
+        { num:'01',             text:'Decide if you want to mandoline your zucchini and squash, cut them in circles.' },
+        { num:'02',             text:'The portabella you will want to grill or sear with olive oil, salt, and pepper. Then you can slice them or leave them whole.' },
+        { num:'03',             text:'In a Pyrex (or other baking) pan, put a little sauce in the bottom just to coat it.' },
+        { num:'04',             text:'Lay down a layer of zucchini or a layer of squash, or alternate them to cover the bottom of the pan after you decide if you want layers of color or everything mixed together.' },
+        { num:'05',             text:'Add some sauce and then layer in spinach and your portabella.' },
+        { num:'06',             text:'Coat with sauce once again and add another layer of your preferred squash.' },
+        { num:'07',             text:'Now, cover this layer with your ricotta mixture.' },
+        { num:'08',             text:'Add your remaining squash. And a drizzle of olive oil.' },
+        { num:'—',              text:'Extra Step: If using more ricotta, repeat the above steps. You can also play with how you layer it.' },
+        { num:'09',             text:'If you\'re going to serve it right out of the oven, I suggest adding the marinara on top or the bechamel if using it. Then coat with your mozzarella. If serving it later, you can bake it with olive oil and add your toppings later on the second bake.' },
+        { num:'—',              text:'Something Between Us: If you wrap your pan with parchment paper, then plastic wrap, then foil — it will hold all the steam in and cook everything super evenly. Especially if you have the cheese on top, it will melt beautifully. Then remove it to brown the cheese at the end.' },
+        { num:'10',             text:'Bake for about 45 minutes to an hour in your preheated oven. Feel it with a knife if you\'re not sure about the cook.' },
+        { num:'11',             text:'Time for service. Let it rest for about 10–15 minutes if serving fresh. Add fresh basil or leftover parsley to the top. A little more olive oil and cheese if you like. Cut it and serve it.' },
+        { num:'For Another Day', text:'Peel open any wrapping and let it cool enough to put it in the fridge. After it\'s chilled, cut it into the portions you want. When ready to serve, put your marinara or bechamel on top with the cheese and bake to warm through. Ready to go.' }
+      ],
+      notesItems:[
+        { label:'Make Ahead',      text:'This can be made a day or two ahead — the flavors marry together and it\'s honestly even better. It\'s also wonderful right out of the oven. Both are true.' },
+        { label:'Going Vegan',     text:'Try a very low temperature bake so the vegetables are warmed but not fully cooked through — a different kind of freshness that works beautifully with vegan ricotta.' },
+        { label:'The Cut',         text:'In the picture, everything is cut in circles — rustic and full of character. For a more refined lasagna, use a mandolin or cut thick, even slices so they layer like pasta sheets. Either way is right.' },
+        { label:'Layered with Love', text:'What you need at the time can determine how decadent or light you make this. Any lasagna is a dish layered with love. Honored in time. Ask yourself — how much did you enjoy making this?' }
+      ]
+    },
     '8':  { num:'08', cat:'Quick', title:'Soft Scrambled Eggs on Toast', time:'8 min', serves:'1', season:'Any', difficulty:'easy', stub:true, story:"Low heat. More time than you think. Worth every minute." },
     '9':  { num:'09', cat:'Baking', title:'Brown Butter Banana Cake', time:'1 hour', serves:'8', season:'Any', difficulty:'medium', stub:true, story:"Better than banana bread. The brown butter is non-negotiable." },
     '10': { num:'10', cat:'Slow Cook', title:'Chicken Cacciatore', time:'1.5 hours', serves:'4', season:'Spring', difficulty:'medium', stub:true, story:"Olives, capers, white wine. Italian grandmother energy — whether or not you have one." },
@@ -1428,13 +1626,23 @@
         </ul>
       </div>`).join('');
 
-    const methodHTML = data.method.map((s, i) => `
-      <li class="method-step">
-        <span class="step-num">${i + 1}</span>
-        <span class="step-text">${s}</span>
-      </li>`).join('');
+    let autoNum = 0;
+    const methodHTML = data.method.map(s => {
+      const num  = typeof s === 'object' ? s.num  : String(++autoNum);
+      const text = typeof s === 'object' ? s.text : s;
+      return `<li class="method-step">
+        <span class="step-num">${num}</span>
+        <span class="step-text">${text}</span>
+      </li>`;
+    }).join('');
 
-    const notesHTML = data.notes.split('\n\n').map(p => `<p style="margin-bottom:.75rem">${p}</p>`).join('');
+    const notesHTML = data.notesItems
+      ? data.notesItems.map(n => `
+          <div style="margin-bottom:1.25rem">
+            <div style="font-size:0.4375rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--sage);margin-bottom:0.3rem">${n.label}</div>
+            <p style="margin-bottom:0;font-family:'Cormorant Infant',serif;font-style:italic;font-weight:300;font-size:0.9375rem;line-height:1.8;color:rgba(238,244,250,0.88)">${n.text}</p>
+          </div>`).join('')
+      : data.notes.split('\n\n').map(p => `<p style="margin-bottom:.75rem">${p}</p>`).join('');
 
     return backBar + hero + `
       <div class="recipe-body">
@@ -1482,16 +1690,34 @@
     pageFlip.loadFromHTML(document.querySelectorAll('.ftk-page'));
   });
 
+  /* ── Open arch entrance doors ── */
+  function openDoors() {
+    const entrance = document.getElementById('arch-entrance');
+    if (!entrance || entrance.classList.contains('doors-open')) return;
+    entrance.classList.add('doors-open');
+    setTimeout(() => { entrance.style.display = 'none'; }, 3600);
+  }
+
   /* ── Open a recipe ── */
   function openRecipe(num, cardEl) {
     const data = recipes[String(num)];
     if (!data) return;
 
-    /* Stubs: pulse the card and bail — don't open blank pages */
+    /* Stubs: pulse the card and bail */
     if (data.stub) {
       if (cardEl) {
         cardEl.classList.add('stub-pulse');
         setTimeout(() => cardEl.classList.remove('stub-pulse'), 700);
+      }
+      return;
+    }
+
+    /* Standalone recipe pages open in the browser */
+    if (data.url) {
+      if (window.pywebview) {
+        window.pywebview.api.open_external(data.url);
+      } else {
+        window.open(data.url, '_blank');
       }
       return;
     }
@@ -1501,7 +1727,7 @@
     document.getElementById('recipe-right-inner').scrollTop = 0;
 
     if (pageFlip) {
-      setTimeout(() => pageFlip.flip(2, 'bottom'), 30);
+      requestAnimationFrame(() => requestAnimationFrame(() => pageFlip.flip(2, 'bottom')));
     }
   }
 
@@ -1528,10 +1754,23 @@
 
   /* ── Filter & Sort ── */
   const allCards   = document.querySelectorAll('.card');
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const sortBtns   = document.querySelectorAll('.sort-btn');
-  const countEl    = document.getElementById('count');
-  const emptyEl    = document.getElementById('empty');
+  const filterBtns  = document.querySelectorAll('.filter-btn');
+  const sortBtns    = document.querySelectorAll('.sort-btn');
+  const countEl     = document.getElementById('count');
+  const emptyEl     = document.getElementById('empty');
+  const filterDescEl = document.getElementById('filter-description');
+
+  const filterDescriptions = {
+    'all':          '',
+    'slow cook':    'Some things can\'t be rushed. These are the recipes that ask you to slow down — long braises, low heat, and the kind of patience that always pays off.',
+    'pasta':        'Simple, honest, endlessly satisfying. Pasta is where instinct and technique find each other. The best versions are rarely complicated.',
+    'seafood':      'The sea has its own rhythm. These recipes follow it — fresh, light, and built around ingredients that don\'t need much help.',
+    'breakfast':    'The meal that sets the tone. These are the ones worth waking up for — unhurried, warm, and made with a little more care than usual.',
+    'baking':       'Baking is a different kind of trust. You follow the process, you give it time, and it gives something back.',
+    'vegetarian':   'Vegetables at the center, not the side. These recipes are built around what the garden offers — full of flavor, full of color, full of intention.',
+    'quick':        'Good food doesn\'t always need time. These come together fast without cutting corners — for the nights when you still want to eat well.',
+    'from scratch': 'The building blocks. Things we make ourselves — the bases, the spreads, the sauces — that go into everything else. Made once, used many times.',
+  };
 
   let activeFilter = 'all';
   let activeSort   = 'number';
@@ -1559,6 +1798,10 @@
 
     countEl.textContent = visible.length;
     if (emptyEl) emptyEl.classList.toggle('show', visible.length === 0);
+
+    const desc = filterDescriptions[activeFilter] || '';
+    filterDescEl.textContent = desc;
+    filterDescEl.classList.toggle('visible', desc.length > 0);
   }
 
   filterBtns.forEach(btn => {
@@ -1578,6 +1821,17 @@
       updateDisplay();
     });
   });
+
+  document.addEventListener('click', function(e) {
+    const a = e.target.closest('a');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (href && (href.startsWith('http://') || href.startsWith('https://'))
+        && !href.includes('localhost') && window.pywebview) {
+      e.preventDefault();
+      window.pywebview.api.open_external(href);
+    }
+  }, true);
 </script>
 </body>
 </html>
