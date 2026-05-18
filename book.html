@@ -1563,6 +1563,7 @@
       num:'13', cat:'Small Plates', title:'Family Meal Fried Rice',
       time:'45min', serves:'6-8', season:'Any', difficulty:'Unique', stub:false,
       image:'Food Pictures/Family Meal Fried Rice.png',
+      noFade:true,
       story:"This is something that has remained in my cycle of life for ages. This recipe doesn't get old, it seems to get younger and more delicious and fresh with time. It is one that's better shared than kept— like so many things in life.\n\nIf you want something you can eat Breakfast, Lunch or Dinner, this is easy, friendly, and all its own style. It's welcoming to whatever you like to put in it, but over the last years this has been my reoccurring combination. I preferred things freshly made, but this serves those times you are drawn to something just as great— when it's leftover.",
       ingredientGroups:[
         { name:'', items:[
@@ -1631,7 +1632,7 @@
     const top = data.image
       ? `<div class="spread-img-wrap">
            <img class="spread-hero-img" src="${data.image}" alt="${data.title}">
-           <div class="spread-img-fade"></div>
+           ${data.noFade ? '' : '<div class="spread-img-fade"></div>'}
          </div>`
       : `<div class="spread-hero-blank"><div class="spread-ghost-num">${data.num}</div></div>`;
 
