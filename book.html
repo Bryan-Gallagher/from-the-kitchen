@@ -1231,6 +1231,7 @@
             <button class="filter-btn" data-filter="baking">Baking</button>
             <button class="filter-btn" data-filter="vegetarian">Vegetarian</button>
             <button class="filter-btn" data-filter="quick">Quick</button>
+            <button class="filter-btn" data-filter="small plates">Small Plates</button>
             <button class="filter-btn" data-filter="from scratch">From Scratch</button>
           </div>
           <div class="lib-controls-row">
@@ -1338,7 +1339,7 @@
             </div>
 
             <div class="card" data-num="1" data-cat="baking" data-time="240" data-season="any" data-name="Country Sourdough">
-              <div class="card-header"><span class="card-cat">Baking</span><span class="card-num">No. 13</span></div>
+              <div class="card-header"><span class="card-cat">Baking</span><span class="card-num">No. 14</span></div>
               <div class="card-title">Country Sourdough</div>
               <div class="card-story">Started because I couldn't sleep. Now I make it every week.</div>
               <div class="card-meta">
@@ -1398,6 +1399,18 @@
                 <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">2</span></div>
                 <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Any</span></div>
                 <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-hard"></div><div class="dot on-hard"></div><div class="dot on-hard"></div></div></div>
+              </div>
+            </div>
+
+            <div class="card" data-num="15" data-cat="small plates" data-time="45" data-season="any" data-name="Family Meal Fried Rice" style="cursor:pointer;">
+              <div class="card-header"><span class="card-cat">Small Plates</span><span class="card-num">No. 13</span></div>
+              <div class="card-title">Family Meal Fried Rice</div>
+              <div class="card-story">This is something that has remained in my cycle of life for ages. It is one that's better shared than kept— like so many things in life.</div>
+              <div class="card-meta">
+                <div class="meta-pill"><span class="meta-label">Time</span><span class="meta-value">45 min</span></div>
+                <div class="meta-pill"><span class="meta-label">Serves</span><span class="meta-value">6-8</span></div>
+                <div class="meta-pill"><span class="meta-label">Season</span><span class="meta-value">Any</span></div>
+                <div class="meta-pill"><span class="meta-label">Difficulty</span><div class="dots"><div class="dot on-easy"></div><div class="dot"></div><div class="dot"></div></div></div>
               </div>
             </div>
 
@@ -1462,7 +1475,7 @@
 <script>
   /* ── Recipe Data ── */
   const recipes = {
-    '1': { num:'13', cat:'Baking', title:'Country Sourdough', time:'4 hours', serves:'8', season:'Any', difficulty:'hard', stub:true, story:"Started because I couldn't sleep. Now I make it every week." },
+    '1': { num:'14', cat:'Baking', title:'Country Sourdough', time:'4 hours', serves:'8', season:'Any', difficulty:'hard', stub:true, story:"Started because I couldn't sleep. Now I make it every week." },
     '2': {
       num:'02', cat:'Slow Cook', title:'Braised Short Ribs with Red Wine',
       time:'3 hours', serves:'6', season:'Winter', difficulty:'medium', stub:false,
@@ -1546,6 +1559,12 @@
     '10': { num:'10', cat:'Slow Cook', title:'Chicken Cacciatore', time:'1.5 hours', serves:'4', season:'Spring', difficulty:'medium', stub:true, story:"Olives, capers, white wine. Italian grandmother energy — whether or not you have one." },
     '11': { num:'11', cat:'Vegetarian', title:'Burrata with Peaches & Basil', time:'10 min', serves:'4', season:'Summer', difficulty:'easy', stub:true, story:"August on a plate. Barely a recipe. Mostly just knowing when to stop." },
     '12': { num:'12', cat:'Pasta', title:'Cacio e Pepe', time:'25 min', serves:'2', season:'Any', difficulty:'hard', stub:true, story:"Three ingredients. One technique. Takes ten tries to get right and then you never forget it." },
+    '15': {
+      num:'13', cat:'Small Plates', title:'Family Meal Fried Rice',
+      time:'45min', serves:'6-8', season:'Any', difficulty:'Unique', stub:false,
+      url:'recipe-family-meal-fried-rice.html',
+      story:"This is something that has remained in my cycle of life for ages. This recipe doesn't get old, it seems to get younger and more delicious and fresh with time."
+    },
     '13': {
       num:'01', cat:'From Scratch', title:'The Marinara',
       time:'60 min', serves:'10', season:'All', difficulty:'easy', stub:false,

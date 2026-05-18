@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Meal Fried Rice — From the Kitchen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Cormorant+Infant:ital,wght@0,300;0,400;1,300;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper:     #F5F0E8;
+      --paper-dim: #EDE8DC;
+      --ink:       #1A1815;
+      --ink-mid:   #3A3530;
+      --muted:     #8A8278;
+      --faint:     rgba(26,24,21,0.07);
+      --celadon:   #7A9E8C;
+      --night:     #1C2030;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    nav {
+      padding: 1.75rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .nav-back {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--ink); }
+
+    .nav-mark {
+      font-family: 'Cormorant', serif;
+      font-size: 1rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 72px);
+    }
+
+    .image-col {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--paper-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      display: block;
+    }
+
+    .image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 60%, var(--paper) 100%);
+    }
+
+    .content-col {
+      padding: 5rem 4rem 6rem 3.5rem;
+      max-width: 640px;
+    }
+
+    .recipe-header-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .recipe-cat {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--celadon);
+    }
+
+    .recipe-divider { height: 1px; width: 32px; background: var(--faint); }
+
+    .recipe-num {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .recipe-title {
+      font-family: 'Cormorant', serif;
+      font-size: clamp(2.5rem, 4.5vw, 3.75rem);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 2.5rem;
+    }
+
+    .meta-strip {
+      display: flex;
+      gap: 2.5rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--faint);
+      border-bottom: 1px solid var(--faint);
+      margin-bottom: 3rem;
+    }
+
+    .meta-item {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.5625rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .meta-item strong {
+      display: block;
+      font-family: 'Cormorant', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      text-transform: none;
+      margin-top: 0.25rem;
+      line-height: 1;
+    }
+
+    .story-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.5625rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--celadon);
+      margin-bottom: 1.125rem;
+    }
+
+    .story {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1.1875rem;
+      line-height: 1.875;
+      color: var(--ink-mid);
+      margin-bottom: 3.5rem;
+    }
+
+    .story p + p { margin-top: 1rem; }
+
+    .section-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.5625rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .ingredients { margin-bottom: 3.5rem; }
+    .ingredient-group { margin-bottom: 1.75rem; }
+
+    .ingredient-group-name {
+      font-family: 'Cormorant', serif;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .ingredient {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .ingredient-amount {
+      font-family: 'Cormorant', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      min-width: 4.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .ingredient-name {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--ink-mid);
+    }
+
+    .method { margin-bottom: 3.5rem; }
+
+    .method-step {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 1.25rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .step-num {
+      font-family: 'Cormorant', serif;
+      font-size: 0.75rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--celadon);
+      padding-top: 0.25rem;
+    }
+
+    .step-text {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 1.0625rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--ink-mid);
+    }
+
+    .notes { background: var(--night); padding: 2.5rem; }
+
+    .notes .section-heading {
+      color: rgba(245,240,232,0.3);
+      border-bottom-color: rgba(245,240,232,0.06);
+    }
+
+    .note-item {
+      padding: 1.125rem 0;
+      border-bottom: 1px solid rgba(245,240,232,0.06);
+    }
+    .note-item:last-child { border-bottom: none; }
+
+    .note-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.5625rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--celadon);
+      margin-bottom: 0.375rem;
+    }
+
+    .note-text {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #ffffff;
+    }
+
+    * { scrollbar-width: none; }
+    *::-webkit-scrollbar { display: none; }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .page { grid-template-columns: 1fr; }
+      .image-col { position: relative; height: 55vw; min-height: 260px; }
+      .image-overlay { background: linear-gradient(to bottom, transparent 40%, var(--paper) 100%); }
+      .content-col { padding: 2.5rem 1.5rem 4rem; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="book.html" class="nav-back">← From the Kitchen</a>
+  <span class="nav-mark">From the Kitchen</span>
+</nav>
+
+<div class="page">
+
+  <div class="image-col">
+    <img src="Food Pictures/Family Meal Fried Rice.png" alt="Family Meal Fried Rice">
+    <div class="image-overlay"></div>
+  </div>
+
+  <div class="content-col">
+
+    <div class="recipe-header-top">
+      <span class="recipe-cat">Small Plates</span>
+      <div class="recipe-divider"></div>
+      <span class="recipe-num">Recipe No. 13 —</span>
+    </div>
+
+    <h1 class="recipe-title">Family Meal Fried Rice</h1>
+
+    <div class="meta-strip">
+      <div class="meta-item">Time <strong>45min</strong></div>
+      <div class="meta-item">Serves <strong>6-8</strong></div>
+      <div class="meta-item">Season <strong>Any</strong></div>
+      <div class="meta-item">Difficulty <strong>Unique</strong></div>
+    </div>
+
+    <p class="story-label">Why this one</p>
+    <div class="story">
+      <p>This is something that has remained in my cycle of life for ages. This recipe doesn't get old, it seems to get younger and more delicious and fresh with time. It is one that's better shared than kept— like so many things in life.</p>
+      <p>If you want something you can eat Breakfast, Lunch or Dinner, this is easy, friendly, and all its own style. It's welcoming to whatever you like to put in it, but over the last years this has been my reoccurring combination. I preferred things freshly made, but this serves those times you are drawn to something just as great— when it's leftover.</p>
+    </div>
+
+    <div class="ingredients">
+      <p class="section-heading">Ingredients</p>
+
+      <div class="ingredient-group">
+        <div class="ingredient">
+          <span class="ingredient-amount">5 cups</span>
+          <span class="ingredient-name">Freshly (or left over) cooked White Rice</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount">1 bunch</span>
+          <span class="ingredient-name">Scallion sliced</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount">3-5</span>
+          <span class="ingredient-name">eggs scrambled</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount">1 bag</span>
+          <span class="ingredient-name">bean sprouts</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount">2 cups</span>
+          <span class="ingredient-name">chopped carrots steamed carrots</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount">1 cup</span>
+          <span class="ingredient-name">golden raisins</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount">1/4 cup</span>
+          <span class="ingredient-name">coconut aminos</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount">1/4 cup</span>
+          <span class="ingredient-name">soy sauce or (soy sauce powder)</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount">1 Tbs</span>
+          <span class="ingredient-name">Garlic Powder</span>
+        </div>
+      </div>
+
+      <div class="ingredient-group">
+        <p class="ingredient-group-name">The Oil</p>
+        <div class="ingredient">
+          <span class="ingredient-amount">1/2 cup+</span>
+          <span class="ingredient-name">Avocado or high heat oil</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount">2 Tbls</span>
+          <span class="ingredient-name">Sesame Oil — mixed in with the above</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="method">
+      <p class="section-heading">Method</p>
+
+      <div class="method-step">
+        <span class="step-num">01</span>
+        <p class="step-text">If your rice is cooked fresh, let it air out a bit using a spatula to "cut it" and create space for air to hit the rice. You can spread it on a baking sheet and drizzle the oil on it. Or if it's already been cooked, oil it in the refrigerator uncovered overnight. You don't have to do this, but giving time to let the moisture out of the rice will introduce something new.</p>
+      </div>
+
+      <div class="method-step">
+        <span class="step-num">02</span>
+        <p class="step-text">Next, blanch your diced carrots in boiling water and strain them, or steam them in the rice cooker with the rice if you have a steam basket.</p>
+      </div>
+
+      <div class="method-step">
+        <span class="step-num">03</span>
+        <p class="step-text">For most of us who don't have a wok and burners that cook over 500 degrees, use a large non-stick pan on high heat and cook off your bean sprouts. Set aside.</p>
+      </div>
+
+      <div class="method-step">
+        <span class="step-num">04</span>
+        <p class="step-text">Toast your steamed carrots as well and set aside with sprouts.</p>
+      </div>
+
+      <div class="method-step">
+        <span class="step-num">05</span>
+        <p class="step-text">Add a little of the same oil you tossed the rice in to the same pan, just enough to coat the pan, since your rice will already have some oil as well. Add the rice and cook on medium heat adjusting as needed for your stove. You want the rice browning, but not burning.</p>
+      </div>
+
+      <div class="method-step">
+        <span class="step-num">06</span>
+        <p class="step-text">Cook the rice using a spatula to lightly turn, fold and brown for 10-15minutes or more. Giving it time to sit and crisp before each turn and fold. As it begins to brown, add your garlic powder and soy sauce and coconut aminos.</p>
+      </div>
+
+      <div class="method-step">
+        <span class="step-num">07</span>
+        <p class="step-text">Add the golden raisins and stir for 5 minutes.</p>
+      </div>
+
+      <div class="method-step">
+        <span class="step-num">08</span>
+        <p class="step-text">You can cook your egg in a separate pan and add it to the rice with everything else now, or just add the rice to a large bowl with your scallion, sprouts, carrots, and use the same pan to cook your eggs and fold it into the rice.</p>
+      </div>
+
+    </div>
+
+    <div class="notes">
+      <p class="section-heading">Notes</p>
+
+      <div class="note-item">
+        <p class="note-label">An Extra Ingredient & Step</p>
+        <p class="note-text">You didn't miss or forget but may just find making its way to you: Chopped or picked cilantro if you have it growing just may be something nice at the end.</p>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('click', function(e) {
+    const a = e.target.closest('a');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (href && (href.startsWith('http://') || href.startsWith('https://'))
+        && !href.includes('localhost') && window.pywebview) {
+      e.preventDefault();
+      window.pywebview.api.open_external(href);
+    }
+  }, true);
+</script>
+
+</body></html>
