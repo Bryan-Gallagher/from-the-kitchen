@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Recipe — From the Kitchen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Cormorant+Infant:ital,wght@0,300;0,400;1,300;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper:     #F5F0E8;
+      --paper-dim: #EDE8DC;
+      --ink:       #1A1815;
+      --ink-mid:   #3A3530;
+      --muted:     #8A8278;
+      --faint:     rgba(26,24,21,0.07);
+      --celadon:   #7A9E8C;
+      --night:     #1C2030;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ── */
+    nav {
+      padding: 1.75rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .nav-back {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--ink); }
+
+    .nav-mark {
+      font-family: 'Cormorant', serif;
+      font-size: 1rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-save {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--celadon);
+      background: none;
+      border: 1px solid var(--celadon);
+      padding: 0.5rem 1.125rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-save:hover { background: var(--celadon); color: var(--paper); }
+
+    /* ── Layout ── */
+    .page {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 72px);
+    }
+
+    /* ── Left: Image column ── */
+    .image-col {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--paper-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-placeholder {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .image-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      display: block;
+      filter: saturate(0.78) brightness(0.82);
+    }
+
+    .image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 60%, var(--paper) 100%);
+    }
+
+    .image-caption {
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.875rem;
+      color: rgba(245,240,232,0.5);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Right: Content column ── */
+    .content-col {
+      padding: 5rem 4rem 6rem 3.5rem;
+      max-width: 640px;
+    }
+
+    .recipe-header-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .recipe-cat {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--celadon);
+    }
+
+    .recipe-divider { height: 1px; width: 32px; background: var(--faint); }
+
+    .recipe-num {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .recipe-title {
+      font-family: 'Cormorant', serif;
+      font-size: clamp(2.5rem, 4.5vw, 3.75rem);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 2.5rem;
+    }
+
+    .meta-strip {
+      display: flex;
+      gap: 2.5rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--faint);
+      border-bottom: 1px solid var(--faint);
+      margin-bottom: 3rem;
+    }
+
+    .meta-item {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.5625rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .meta-item strong {
+      display: block;
+      font-family: 'Cormorant', serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      text-transform: none;
+      margin-top: 0.25rem;
+      line-height: 1;
+    }
+
+    .story-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.5625rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--celadon);
+      margin-bottom: 1.125rem;
+    }
+
+    .story {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1.1875rem;
+      line-height: 1.875;
+      color: var(--ink-mid);
+      margin-bottom: 3.5rem;
+    }
+
+    .story p + p { margin-top: 1rem; }
+
+    .section-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.5625rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .ingredients { margin-bottom: 3.5rem; }
+
+    .ingredient-group { margin-bottom: 1.75rem; }
+
+    .ingredient-group-name {
+      font-family: 'Cormorant', serif;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .ingredient {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .ingredient-amount {
+      font-family: 'Cormorant', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      min-width: 3.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .ingredient-name {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--ink-mid);
+    }
+
+    .method { margin-bottom: 3.5rem; }
+
+    .method-step {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 1.25rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .step-num {
+      font-family: 'Cormorant', serif;
+      font-size: 0.75rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--celadon);
+      padding-top: 0.25rem;
+    }
+
+    .step-text {
+      font-family: 'Cormorant Infant', serif;
+      font-size: 1.0625rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--ink-mid);
+    }
+
+    .step-text strong { font-weight: 500; font-style: normal; color: var(--ink); }
+
+    .notes { background: var(--night); padding: 2.5rem; }
+
+    .notes .section-heading {
+      color: rgba(245,240,232,0.3);
+      border-bottom-color: rgba(245,240,232,0.06);
+    }
+
+    .note-item {
+      padding: 1.125rem 0;
+      border-bottom: 1px solid rgba(245,240,232,0.06);
+    }
+
+    .note-item:last-child { border-bottom: none; }
+
+    .note-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.5625rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--celadon);
+      margin-bottom: 0.375rem;
+    }
+
+    .note-text {
+      font-family: 'Cormorant Infant', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #ffffff;
+    }
+
+    * { scrollbar-width: none; }
+    *::-webkit-scrollbar { display: none; }
+
+    [contenteditable] { outline: none; }
+    [contenteditable]:hover { background: rgba(122,158,140,0.06); border-radius: 3px; }
+    [contenteditable]:focus { background: rgba(122,158,140,0.10); border-radius: 3px; }
+
+    /* ── Formatting toolbar ── */
+    #format-toolbar {
+      position: fixed;
+      display: none;
+      align-items: center;
+      gap: 2px;
+      background: var(--night);
+      border-radius: 6px;
+      padding: 5px 6px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      z-index: 999;
+      transform: translateX(-50%);
+    }
+
+    #format-toolbar.visible { display: flex; }
+
+    .fmt-btn {
+      background: none;
+      border: none;
+      color: rgba(245,240,232,0.75);
+      font-size: 0.75rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      line-height: 1;
+    }
+
+    .fmt-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+    .fmt-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.1); margin: 0 2px; }
+    .fmt-highlight { color: #f0c040; }
+
+    #link-input-wrap { display: none; align-items: center; gap: 4px; }
+    #link-input-wrap.visible { display: flex; }
+
+    #link-input {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 4px;
+      color: white;
+      font-size: 0.6875rem;
+      font-family: 'Syne', sans-serif;
+      padding: 4px 8px;
+      width: 220px;
+      outline: none;
+    }
+
+    #link-input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .fmt-confirm {
+      font-size: 0.6875rem;
+      color: var(--celadon);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      padding: 4px 6px;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .page { grid-template-columns: 1fr; }
+      .image-col { position: relative; height: 55vw; min-height: 260px; }
+      .image-overlay { background: linear-gradient(to bottom, transparent 40%, var(--paper) 100%); }
+      .content-col { padding: 2.5rem 1.5rem 4rem; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating format toolbar -->
+<div id="format-toolbar">
+  <div id="fmt-buttons">
+    <button class="fmt-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+    <button class="fmt-btn" data-cmd="italic" title="Italic"><em>I</em></button>
+    <button class="fmt-btn" data-cmd="underline" title="Underline"><u>U</u></button>
+    <div class="fmt-sep"></div>
+    <button class="fmt-btn fmt-highlight" data-cmd="highlight" title="Highlight">▲</button>
+    <div class="fmt-sep"></div>
+    <button class="fmt-btn" data-cmd="link" title="Link">⌘ Link</button>
+  </div>
+  <div id="link-input-wrap">
+    <input id="link-input" type="text" placeholder="e.g. from-scratch — vegan ricotta">
+    <button class="fmt-confirm" id="link-confirm">Done</button>
+    <button class="fmt-confirm" id="link-cancel" style="color:rgba(255,255,255,0.4)">✕</button>
+  </div>
+</div>
+
+<nav>
+  <a href="book.html" class="nav-back">← From the Kitchen</a>
+  <span class="nav-mark">From the Kitchen</span>
+  <button class="nav-save">Save Recipe</button>
+</nav>
+
+<div class="page">
+
+  <!-- Left: Image (drop your photo src in here) -->
+  <div class="image-col">
+    <div class="image-placeholder">Photo goes here</div>
+  </div>
+
+  <!-- Right: Content -->
+  <div class="content-col">
+
+    <div class="recipe-header-top">
+      <span class="recipe-cat" contenteditable="true">Category</span>
+      <div class="recipe-divider"></div>
+      <span class="recipe-num" contenteditable="true">Recipe No. —</span>
+    </div>
+
+    <h1 class="recipe-title" contenteditable="true">Recipe Title</h1>
+
+    <div class="meta-strip">
+      <div class="meta-item">Time <strong contenteditable="true">—</strong></div>
+      <div class="meta-item">Serves <strong contenteditable="true">—</strong></div>
+      <div class="meta-item">Season <strong contenteditable="true">—</strong></div>
+      <div class="meta-item">Difficulty <strong contenteditable="true">—</strong></div>
+    </div>
+
+    <p class="story-label">Why this one</p>
+    <div class="story" contenteditable="true">
+      <p>Write your story here — why this recipe, what it means, when you make it.</p>
+    </div>
+
+    <div class="ingredients">
+      <p class="section-heading">Ingredients</p>
+
+      <div class="ingredient-group">
+        <p class="ingredient-group-name" contenteditable="true">Group name</p>
+        <div class="ingredient">
+          <span class="ingredient-amount" contenteditable="true">—</span>
+          <span class="ingredient-name" contenteditable="true">ingredient</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount" contenteditable="true">—</span>
+          <span class="ingredient-name" contenteditable="true">ingredient</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount" contenteditable="true">—</span>
+          <span class="ingredient-name" contenteditable="true">ingredient</span>
+        </div>
+      </div>
+
+      <div class="ingredient-group">
+        <p class="ingredient-group-name" contenteditable="true">Group name</p>
+        <div class="ingredient">
+          <span class="ingredient-amount" contenteditable="true">—</span>
+          <span class="ingredient-name" contenteditable="true">ingredient</span>
+        </div>
+        <div class="ingredient">
+          <span class="ingredient-amount" contenteditable="true">—</span>
+          <span class="ingredient-name" contenteditable="true">ingredient</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="method">
+      <p class="section-heading">Method</p>
+      <div class="method-step">
+        <span class="step-num">01</span>
+        <p class="step-text" contenteditable="true">First step.</p>
+      </div>
+      <div class="method-step">
+        <span class="step-num">02</span>
+        <p class="step-text" contenteditable="true">Second step.</p>
+      </div>
+      <div class="method-step">
+        <span class="step-num">03</span>
+        <p class="step-text" contenteditable="true">Third step.</p>
+      </div>
+      <div class="method-step">
+        <span class="step-num">04</span>
+        <p class="step-text" contenteditable="true">Fourth step.</p>
+      </div>
+    </div>
+
+    <div class="notes">
+      <p class="section-heading">Notes</p>
+      <div class="note-item">
+        <p class="note-label" contenteditable="true">Note</p>
+        <p class="note-text" contenteditable="true">Your note here.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── Formatting toolbar ──
+  const toolbar    = document.getElementById('format-toolbar');
+  const fmtBtns    = document.getElementById('fmt-buttons');
+  const linkWrap   = document.getElementById('link-input-wrap');
+  const linkInput  = document.getElementById('link-input');
+  let savedRange   = null;
+
+  function showToolbar(rect) {
+    toolbar.classList.add('visible');
+    const tbH = toolbar.offsetHeight || 40;
+    const top  = rect.top - tbH - 8;
+    toolbar.style.left = (rect.left + rect.width / 2) + 'px';
+    toolbar.style.top  = (top < 8 ? rect.bottom + 8 : top) + 'px';
+  }
+
+  function hideToolbar() {
+    toolbar.classList.remove('visible');
+    fmtBtns.style.display = 'flex';
+    linkWrap.classList.remove('visible');
+  }
+
+  document.addEventListener('mouseup', (e) => {
+    if (toolbar.contains(e.target)) return;
+    setTimeout(() => {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed || !sel.toString().trim()) { hideToolbar(); return; }
+      const range    = sel.getRangeAt(0);
+      const rect     = range.getBoundingClientRect();
+      const ancestor = range.commonAncestorContainer;
+      const el       = ancestor.nodeType === 3 ? ancestor.parentElement : ancestor;
+      if (!el?.closest('[contenteditable]')) { hideToolbar(); return; }
+      savedRange = range.cloneRange();
+      showToolbar(rect);
+    }, 10);
+  });
+
+  document.addEventListener('mousedown', (e) => {
+    if (!toolbar.contains(e.target)) hideToolbar();
+  });
+
+  document.querySelectorAll('.fmt-btn').forEach(btn => {
+    btn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const cmd = btn.dataset.cmd;
+      if (cmd === 'link') {
+        fmtBtns.style.display = 'none';
+        linkWrap.classList.add('visible');
+        linkInput.value = '';
+        linkInput.focus();
+        return;
+      }
+      if (cmd === 'highlight') {
+        document.execCommand('hiliteColor', false, '#fff3b0');
+      } else {
+        document.execCommand(cmd, false, null);
+      }
+    });
+  });
+
+  document.getElementById('link-confirm').addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    const url = linkInput.value.trim();
+    if (url && savedRange) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedRange);
+      document.execCommand('createLink', false, url);
+      document.querySelectorAll('[contenteditable] a').forEach(a => {
+        a.target = '_blank';
+        a.style.color = 'var(--celadon)';
+      });
+    }
+    hideToolbar();
+  });
+
+  document.getElementById('link-cancel').addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    hideToolbar();
+  });
+
+  // ── Save — names file from recipe title ──
+  document.querySelector('.nav-save').addEventListener('click', async () => {
+    const title    = document.querySelector('.recipe-title')?.innerText?.trim() || 'new-recipe';
+    const slug     = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const filename = `recipe-${slug}.html`;
+    const html     = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    const btn      = document.querySelector('.nav-save');
+    btn.textContent = 'Saving…';
+    try {
+      const res = await fetch('http://localhost:8765/api/save-recipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename, html }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        btn.textContent = 'Saved ✓';
+      } else {
+        btn.textContent = 'Error — try again';
+      }
+    } catch (e) {
+      btn.textContent = 'Error — try again';
+    }
+    setTimeout(() => btn.textContent = 'Save Recipe', 2500);
+  });
+
+  document.addEventListener('click', function(e) {
+    const a = e.target.closest('a');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (href && (href.startsWith('http://') || href.startsWith('https://'))
+        && !href.includes('localhost') && window.pywebview) {
+      e.preventDefault();
+      window.pywebview.api.open_external(href);
+    }
+  }, true);
+</script>
+
+</body>
+</html>
