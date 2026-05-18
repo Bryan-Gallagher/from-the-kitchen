@@ -1681,6 +1681,10 @@
             <span class="recipe-hero-meta-label">Season</span>
             <span class="recipe-hero-meta-value">${data.season}</span>
           </div>
+          ${data.difficulty ? `<div class="recipe-hero-meta-item">
+            <span class="recipe-hero-meta-label">Difficulty</span>
+            <span class="recipe-hero-meta-value">${data.difficulty}</span>
+          </div>` : ''}
         </div>
       </div>`;
 
